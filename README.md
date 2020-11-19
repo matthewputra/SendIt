@@ -120,5 +120,5 @@ Sending packages to friends and family can take a lot of time, especially in the
 
 ### Infrastructure Diagram 
 
-TODO
+![SendIt Infrastructure Diagram](infrastructure_v1.jpg)
 
