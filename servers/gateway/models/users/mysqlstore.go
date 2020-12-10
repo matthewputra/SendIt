@@ -30,13 +30,16 @@ func (mss *MySQLStore) GetByID(id int64) (*User, error) {
 
 	var user User
 	if row.Next() {
-		row.Scan(&user.ID,
+		err = row.Scan(&user.ID,
 			&user.Email,
 			&user.PassHash,
 			&user.UserName,
 			&user.FirstName,
 			&user.LastName,
 			&user.UserType)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &user, nil
 }
@@ -51,13 +54,16 @@ func (mss *MySQLStore) GetByEmail(email string) (*User, error) {
 
 	var user User
 	if row.Next() {
-		row.Scan(&user.ID,
+		err = row.Scan(&user.ID,
 			&user.Email,
 			&user.PassHash,
 			&user.UserName,
 			&user.FirstName,
 			&user.LastName,
 			&user.UserType)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &user, nil
 }
@@ -72,13 +78,16 @@ func (mss *MySQLStore) GetByUserName(username string) (*User, error) {
 
 	var user User
 	if row.Next() {
-		row.Scan(&user.ID,
+		err = row.Scan(&user.ID,
 			&user.Email,
 			&user.PassHash,
 			&user.UserName,
 			&user.FirstName,
 			&user.LastName,
 			&user.UserType)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &user, nil
 }
@@ -112,8 +121,7 @@ func (mss *MySQLStore) Update(id int64, updates *Updates) (*User, error) {
 
 // Delete deletes the user from the MySQLStore with the given ID
 func (mss *MySQLStore) Delete(id int64) error {
-	query := "DELETE FROM Users " +
-		"WHERE id=?"
+	query := "DELETE FROM Users WHERE id=?"
 	_, err := mss.db.Exec(query, id)
 	if err != nil {
 		return err
