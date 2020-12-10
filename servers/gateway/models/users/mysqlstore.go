@@ -22,7 +22,7 @@ func NewMySQLStore(DB *sql.DB) *MySQLStore {
 
 // GetByID with the given ID
 func (mss *MySQLStore) GetByID(id int64) (*User, error) {
-	query := "SELECT id,email,passHash,username,firstName,lastName,photoUrl FROM Users WHERE id=?"
+	query := "SELECT id,email,passHash,username,firstName,lastName,usertype FROM Users WHERE id=?"
 	row, err := mss.db.Query(query, id)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (mss *MySQLStore) GetByID(id int64) (*User, error) {
 
 // GetByEmail returns the user with the given email
 func (mss *MySQLStore) GetByEmail(email string) (*User, error) {
-	query := "SELECT id,email,passhash,username,firstname,lastname,photourl FROM Users WHERE email=?"
+	query := "SELECT id,email,passhash,username,firstname,lastname,usertype FROM Users WHERE email=?"
 	row, err := mss.db.Query(query, email)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (mss *MySQLStore) GetByEmail(email string) (*User, error) {
 
 // GetByUserName returns the user with the given username
 func (mss *MySQLStore) GetByUserName(username string) (*User, error) {
-	query := "SELECT id,email,passhash,username,firstname,lastname,photourl FROM Users WHERE username=?"
+	query := "SELECT id,email,passhash,username,firstname,lastname,usertype FROM Users WHERE username=?"
 	row, err := mss.db.Query(query, username)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (mss *MySQLStore) GetByUserName(username string) (*User, error) {
 // Insert creates a new user in the MySQLStore and returns the
 // created user
 func (mss *MySQLStore) Insert(user *User) (*User, error) {
-	query := "INSERT INTO Users(email, passhash, username, firstname, lastname, photoURL) VALUES (?, ?, ?, ?, ?, ?)"
+	query := "INSERT INTO Users(email, passhash, username, firstname, lastname, usertype) VALUES (?, ?, ?, ?, ?, ?)"
 	res, err := mss.db.Exec(query, user.Email, user.PassHash, user.UserName, user.FirstName, user.LastName, user.UserType)
 	if err != nil {
 		return nil, err
