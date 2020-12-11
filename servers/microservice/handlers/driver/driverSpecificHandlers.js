@@ -32,7 +32,7 @@ const getAssignedOrdersHandlers = async (req, res, { Order }) => {
 }
 
 // Handles GET request for a specific driver to get completed orders
-const getAssignedOrdersHandlers = async (req, res, { Order }) => {
+const getCompletedOrdersHandlers = async (req, res, { Order }) => {
     let authUser = JSON.parse(req.get("X-User"));
     if (!authUser) {
         res.status(401).send("Unauthorized user")
