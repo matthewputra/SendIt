@@ -1,6 +1,6 @@
 
 // Handles GET request for a specific driver to get assigned orders
-const getAssignedOrdersHandlers = async (req, res, { Order }) => {
+const getAssignedOrdersHandlers = async (req, res, { Order, mysqlConn }) => {
     let authUser = JSON.parse(req.get("X-User"));
     if (!authUser) {
         res.status(401).send("Unauthorized user")
@@ -73,3 +73,5 @@ const getTotalEarnings = async (req, res, { Order }) => {
         return;
     }
 }
+
+module.exports = { getAssignedOrdersHandlers, getCompletedOrdersHandlers, getTotalEarnings }

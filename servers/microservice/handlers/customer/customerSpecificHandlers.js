@@ -1,6 +1,6 @@
 
 // Handles the GET request for customer orders
-const getCustomerOrders = async (req, res, { Order }) => {
+const getCustomerOrders = async (req, res, { Order, mysqlConn }) => {
     let authUser = JSON.parse(req.get("X-User"));
     if (!authUser) {
         res.status(401).send("Unauthorized user")
@@ -72,3 +72,5 @@ const createNewOrderHandler = async (req, res, { Order }) => {
         res.status(201).send("Order successfully submitted");
     });
 }
+
+module.exports = { getCustomerOrders, createNewOrderHandler }

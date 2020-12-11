@@ -68,3 +68,5 @@ const completeOrderHandler = async (req, res, { Order }) => {
         return;
     }
 }
+
+module.exports = { acceptOrderHandler, completeOrderHandler }
