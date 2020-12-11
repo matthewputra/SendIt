@@ -106,8 +106,8 @@ Sending packages to friends and family can take a lot of time, especially in the
     * 415: Invalid request method
     * 500: Internal server error
 * ```/v1/driver/complete```
-  * GET: Display all completed order information
-    * 200: Successfully returns the total earning of the driver
+  * GET: Display all completed orders' information
+    * 200: Successfully returns list of all completed orders
     * 401: Driver is not logged in
     * 415: Invalid request method
     * 500: Internal server error
