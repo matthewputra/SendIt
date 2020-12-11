@@ -18,7 +18,7 @@ const getCustomerOrders = async (req, res, { Order }) => {
     }
 
     try {
-        const orders = await Channel.find( { customerID: userID });
+        const orders = await Order.find( { customerID: userID });
         res.setHeader("Content-Type", "application/json");
         res.json(orders);
     } catch (e) {
