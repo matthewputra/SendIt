@@ -50,3 +50,26 @@ const getCompletedOrdersHandlers = async (req, res, { Order }) => {
         return;
     }
 }
+
+// Handles GET request for a specific driver to get total earnings
+const getTotalEarnings = async (req, res, { Order }) => {
+    let authUser = JSON.parse(req.get("X-User"));
+    if (!authUser) {
+        res.status(401).send("Unauthorized user")
+        return;
+    }
+    
+    var driverID = authUser.id;
+
+    try {
+        const orders = await Order.find( { driverID: driverID, status: "Completed" });
+        totalEarnings = 0;
+        for (i = 0; i < orders.length; i++) {
+            totalEarnings += orders[i].price;
+        }
+        res.status(200).send(totalEarnings);
+    } catch (e) {
+        res.status(500).send("Internal Server Error - " + e);
+        return;
+    }
+}
