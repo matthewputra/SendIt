@@ -8,7 +8,8 @@ const getCustomerOrders = async (req, res, { Order }) => {
     }
     
     var userID = authUser.id;
-
+    var customerID = req.params.customerID;
+    
     const sqlQuery = 'SELECT email FROM Users WHERE id = ' + customerID;
     const rows = await mysqlConn.query(sqlQuery);
     if (rows.length == 0) {
