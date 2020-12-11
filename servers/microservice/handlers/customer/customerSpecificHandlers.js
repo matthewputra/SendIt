@@ -10,7 +10,7 @@ const getCustomerOrders = async (req, res, { Order }) => {
     var userID = authUser.id;
     var customerID = req.params.customerID;
     
-    const sqlQuery = 'SELECT email FROM Users WHERE id = ' + customerID;
+    const sqlQuery = 'SELECT usertype FROM Users WHERE id = ' + customerID;
     const rows = await mysqlConn.query(sqlQuery);
     if (rows.length == 0) {
         res.status(404).send("CustomerID not found");

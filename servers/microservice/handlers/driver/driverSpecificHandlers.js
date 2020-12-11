@@ -8,7 +8,7 @@ const getAssignedOrdersHandlers = async (req, res, { Order }) => {
     }
 
     var driverID = req.params.driverID;
-    const sqlQuery = 'SELECT email FROM Users WHERE id = ' + driverID;
+    const sqlQuery = 'SELECT usertype FROM Users WHERE id = ' + driverID;
     const rows = await mysqlConn.query(sqlQuery);
     if (rows.length == 0) {
         res.status(404).send("Driver not found");
