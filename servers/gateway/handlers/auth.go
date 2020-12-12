@@ -54,17 +54,22 @@ func (ctx *handlers.HandlerContext) NewCustomerHandler(w http.ResponseWriter, r 
 		}
 
 		// Begin Session
-		sessions.BeginSession(ctx.Key, ctx.SessionStore, ctx.User, w)
-
-		// Respond with 201 status
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
+		err = sessions.BeginSession(ctx.Key, ctx.SessionStore, ctx.User, w)
+		if err != nil {
+			// 500
+			http.Error(w, "Error beginning session", http.StatusInternalServerError)
+		}
 
 		// Respond with new user profile encoded as a JSON object.
 		encodeErr := json.NewEncoder(w).Encode(insertedUser)
 		if encodeErr != nil {
 			http.Error(w, "Error encoding and sending user", http.StatusInternalServerError)
 		}
+
+		// Respond with 201 status
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+
 	} else {
 		http.Error(w, "Must be a POST request method", http.StatusMethodNotAllowed)
 	}
@@ -112,17 +117,22 @@ func (ctx *handlers.HandlerContext) NewDriverHandler(w http.ResponseWriter, r *h
 		}
 
 		// Begin Session with user returned by users.Insert
-		sessions.BeginSession(ctx.Key, ctx.SessionStore, insertedUser, w)
-
-		// Respond with 201 status
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
+		err = sessions.BeginSession(ctx.Key, ctx.SessionStore, insertedUser, w)
+		if err != nil {
+			// 500
+			http.Error(w, "Error beginning session", http.StatusInternalServerError)
+		}
 
 		// Respond with new user profile encoded as a JSON object.
 		encodeErr := json.NewEncoder(w).Encode(insertedUser)
 		if encodeErr != nil {
 			http.Error(w, "Error encoding and sending driver", http.StatusInternalServerError)
 		}
+
+		// Respond with 201 status
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+
 	} else {
 		http.Error(w, "Must be a POST request method", http.StatusMethodNotAllowed)
 	}
@@ -199,13 +209,15 @@ func (ctx *handlers.HandlerContext) LoginCustomerHandler(w http.ResponseWriter, 
 			// 500
 			http.Error(w, "Error ending session and logging out", http.StatusInternalServerError)
 		}
+		w.WriteHeader(http.StatusOK)
+
 	} else {
 		http.Error(w, "Must be a POST or DELETE request method", http.StatusMethodNotAllowed)
 	}
 }
 
-// Handles POST: Log in customer and returns a session ID
-//		   DELETE: Log out a customer
+// Handles POST: Log in driver and returns a session ID
+//		   DELETE: Log out a driver
 func (ctx *handlers.HandlerContext) LoginDriverHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
@@ -275,6 +287,8 @@ func (ctx *handlers.HandlerContext) LoginDriverHandler(w http.ResponseWriter, r 
 			// 500
 			http.Error(w, "Error ending session and logging out", http.StatusInternalServerError)
 		}
+		w.WriteHeader(http.StatusOK)
+
 	} else {
 		http.Error(w, "Must be a POST or DELETE request method", http.StatusMethodNotAllowed)
 	}

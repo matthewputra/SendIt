@@ -99,11 +99,11 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// TODO: Change this according to the new user handlers
-	mux.HandleFunc("/v1/users", ctx.UsersHandler)
-	mux.HandleFunc("/v1/users/", ctx.SpecificUserHandler)
-	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
-	mux.HandleFunc("/v1/sessions/", ctx.SpecificSessionHandler)
+	// Handlers for logging in and signing up new customers/drivers
+	mux.HandleFunc("/v1/customer", ctx.NewCustomerHandler)
+	mux.HandleFunc("/v1/customer/login", ctx.LoginCustomerHandler)
+	mux.HandleFunc("/v1/driver", ctx.NewDriverHandler)
+	mux.HandleFunc("/v1/driver/login", ctx.LoginDriverHandler)
 
 	// TODO: Change this according to the microservice
 	mux.Handle("/v1/channels", messagingProxy)
