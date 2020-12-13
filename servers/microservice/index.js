@@ -9,6 +9,8 @@ const { getAssignedOrdersHandlers,
         getTotalEarnings } = require("./handlers/driver/driverSpecificHandlers");
 const { acceptOrderHandler, 
         completeOrderHandler } = require("./handlers/driver/orderSpecificHandlers")
+const { getOrderInformation,
+        updateOrderInformation } = require("./handlers/customer/orderSpecificHandlers")
 
 var mysqlConn = mysql.createPool({
                             host: '<container-name>',
@@ -43,8 +45,10 @@ app.route("/v1/customer/:customerID/order")
     .post(RequestWrapper(createNewOrderHandler, { Order }))
     .all(methodNotAllowed);
 
-// API endpoints for a specific order (customer-side) - TODO: Matthew
+// API endpoints for a specific order (customer-side)
 app.route("/v1/customer/:customerID/order/:orderID")
+    .get(RequestWrapper(getOrderInformation, { Order }))
+    .update(RequestWrapper(updateOrderInformation, { Order }))
     .all(methodNotAllowed);
 
 // API endpoints for specific driver
