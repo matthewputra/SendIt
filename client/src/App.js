@@ -3,8 +3,8 @@ import './App.css';
 import React, {useEffect, useState} from 'react'
 import {BrowserRouter} from 'react-router-dom'
 
-import MainPage from './Main/Main'
-import Auth from './Auth/Auth'
+import MainPage from './main/Main'
+import Auth from './auth/Auth'
 
 const EXAMPLE_USER = {
   userName: "user",
