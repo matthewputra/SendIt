@@ -4,11 +4,17 @@ import React, {useEffect, useState} from 'react'
 import {BrowserRouter} from 'react-router-dom'
 
 import MainPage from './Main/Main'
-import Auth from './Auth/SignIn'
+import Auth from './Auth/Auth'
+
+const EXAMPLE_USER = {
+  userName: "user",
+  firstName: "first",
+  lastName: "last"
+}
 
 function App() {
   const [auth, setAuth] = useState(localStorage.getItem("Authorization"));
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(EXAMPLE_USER);
 
   const handleSetUser = (user) => {
     setUser(user)
@@ -20,13 +26,13 @@ function App() {
   }
 
   let content = <></>;
-  if (auth) {
+  if (!auth) {
     content = <MainPage auth={auth} user={user} setAuth={handleSetAuth}/>
   } else {
     content = <Auth setUser={handleSetUser} setAuth={handleSetAuth}/>
   }
   return (
-    <BrowserRouter >
+    <BrowserRouter>
       <div className="App">
         <header>
           SendIt App
