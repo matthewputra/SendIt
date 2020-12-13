@@ -102,6 +102,7 @@ func main() {
 	mux.HandleFunc("/v1/driver", ctx.NewDriverHandler)
 	mux.HandleFunc("/v1/driver/login", ctx.LoginDriverHandler)
 
+	// TODO: these need to be changed according to new endpoints
 	mux.Handle("/v1/channels", microserviceProxy)
 	mux.Handle("/v1/channels/", microserviceProxy)
 	mux.Handle("/v1/messages/", microserviceProxy)

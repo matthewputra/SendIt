@@ -13,13 +13,13 @@ const { getOrderInformation,
         updateOrderInformation } = require("./handlers/customer/orderSpecificHandlers")
 
 var mysqlConn = mysql.createPool({
-                            host: '<container-name>',
+                            host: 'mysqlContainer',
                             port: '3306',
                             user: 'root',
-                            password: '<password>',
-                            database: '<sql-database-name>'});
+                            password: 'serversidedb',
+                            database: 'sendItMySqlDB'});
 
-const mongoEngpoint = "mongodb://<container-name>:27017/<database-name>?authSource=admin";
+const mongoEngpoint = "mongodb://redisContainer:27017/sendItMongo?authSource=admin";
 const port = 5200;
 
 const Order = mongoose.model("Order", OrderSchema)

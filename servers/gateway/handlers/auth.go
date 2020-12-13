@@ -2,18 +2,18 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
-
-	"github.com/matthewputra/SendIt/servers/gateway/handlers"
+	"time"
 
 	"github.com/matthewputra/SendIt/servers/gateway/models/users"
 	"github.com/matthewputra/SendIt/servers/gateway/sessions"
 )
 
-// Handles POST: creating a new customer, taking JSON
-func (ctx *handlers.HandlerContext) NewCustomerHandler(w http.ResponseWriter, r *http.Request) {
+// NewCustomerHandler Handles POST: creating a new customer, taking JSON
+func (ctx *HandlerContext) NewCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
 		if r.Header.Get("Content-Type") != "application/json" {
@@ -47,28 +47,19 @@ func (ctx *handlers.HandlerContext) NewCustomerHandler(w http.ResponseWriter, r 
 		}
 
 		// Insert new user
-		insertedUser, err := users.Insert(validatedUser)
+		insertedUser, err := ctx.UserStore.Insert(validatedUser)
 		if err != nil {
 			// 500
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
 
 		// Begin Session
-		err = sessions.BeginSession(ctx.Key, ctx.SessionStore, ctx.User, w)
-		if err != nil {
-			// 500
-			http.Error(w, "Error beginning session", http.StatusInternalServerError)
-		}
-
-		// Respond with new user profile encoded as a JSON object.
-		encodeErr := json.NewEncoder(w).Encode(insertedUser)
-		if encodeErr != nil {
-			http.Error(w, "Error encoding and sending user", http.StatusInternalServerError)
-		}
-
-		// Respond with 201 status
-		w.Header().Add("Content-Type", "application/json")
+		ctx.newSession(insertedUser, w)
+		validUser, _ := ctx.UserStore.GetByID(insertedUser.ID)
+		validUserJSON, _ := json.Marshal(validUser)
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		w.Write(validUserJSON)
 
 	} else {
 		http.Error(w, "Must be a POST request method", http.StatusMethodNotAllowed)
@@ -76,7 +67,7 @@ func (ctx *handlers.HandlerContext) NewCustomerHandler(w http.ResponseWriter, r 
 }
 
 // Handles POST: Create new driver, takes JSON
-func (ctx *handlers.HandlerContext) NewDriverHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) NewDriverHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
 		if r.Header.Get("Content-Type") != "application/json" {
@@ -110,28 +101,19 @@ func (ctx *handlers.HandlerContext) NewDriverHandler(w http.ResponseWriter, r *h
 		}
 
 		// Insert new user
-		insertedUser, err := users.Insert(validatedUser)
+		insertedUser, err := ctx.UserStore.Insert(validatedUser)
 		if err != nil {
 			// 500
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
 
-		// Begin Session with user returned by users.Insert
-		err = sessions.BeginSession(ctx.Key, ctx.SessionStore, insertedUser, w)
-		if err != nil {
-			// 500
-			http.Error(w, "Error beginning session", http.StatusInternalServerError)
-		}
-
-		// Respond with new user profile encoded as a JSON object.
-		encodeErr := json.NewEncoder(w).Encode(insertedUser)
-		if encodeErr != nil {
-			http.Error(w, "Error encoding and sending driver", http.StatusInternalServerError)
-		}
-
-		// Respond with 201 status
-		w.Header().Add("Content-Type", "application/json")
+		// Begin Session
+		ctx.newSession(insertedUser, w)
+		validUser, _ := ctx.UserStore.GetByID(insertedUser.ID)
+		validUserJSON, _ := json.Marshal(validUser)
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		w.Write(validUserJSON)
 
 	} else {
 		http.Error(w, "Must be a POST request method", http.StatusMethodNotAllowed)
@@ -140,7 +122,7 @@ func (ctx *handlers.HandlerContext) NewDriverHandler(w http.ResponseWriter, r *h
 
 // Handles POST: Log in customer and returns a session ID
 //		   DELETE: Log out a customer
-func (ctx *handlers.HandlerContext) LoginCustomerHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) LoginCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
 		if r.URL.Query().Get("Content-Type") != "application/json" {
@@ -218,7 +200,7 @@ func (ctx *handlers.HandlerContext) LoginCustomerHandler(w http.ResponseWriter, 
 
 // Handles POST: Log in driver and returns a session ID
 //		   DELETE: Log out a driver
-func (ctx *handlers.HandlerContext) LoginDriverHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) LoginDriverHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
 		if r.URL.Query().Get("Content-Type") != "application/json" {
@@ -291,5 +273,17 @@ func (ctx *handlers.HandlerContext) LoginDriverHandler(w http.ResponseWriter, r 
 
 	} else {
 		http.Error(w, "Must be a POST or DELETE request method", http.StatusMethodNotAllowed)
+	}
+}
+
+func (ctx *HandlerContext) newSession(validUser *users.User, w http.ResponseWriter) {
+	var state SessionState
+	state.User = validUser
+	state.StartTime = time.Now()
+
+	_, err := sessions.BeginSession(ctx.SigningKey, ctx.SessionStore, state, w)
+
+	if err != nil {
+		fmt.Println("Error while creating new session")
 	}
 }

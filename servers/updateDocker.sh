@@ -14,20 +14,21 @@ docker run \
 
 # Generate docker container from mysql image
 docker rm -f mysqlContainer
-docker pull matthewputra/sendItMySQL
+docker pull saksham8/sendit-mysql
 
-# TODO: ADD PASSWORD AND DSN
-export MYSQL_ROOT_PASSWORD=
-export DSN="root:{PASSWORD}@tcp(mysqlContainer:3306)/sendItMySQL"
+export MYSQL_DATABASE="sendItMySqlDB"
+export MYSQL_ROOT_PASSWORD="serversidedb"
+export DSN="root:$MYSQL_ROOT_PASSWORD@tcp(mysqlContainer:3306)/$MYSQL_DATABASE"
 
 docker run \
   -d \
-  -p 3306:3306 \
   --network serverNetwork \
+  -v /etc/letsencrypt:/etc/letsencrypt:ro \
+  -p 3306:3306 \
   --name mysqlContainer \
   -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
-  -e MYSQL_DATABASE=sendItMySQL \
-  matthewputra/sendItMySQL
+  -e MYSQL_DATABASE=$MYSQL_DATABASE \
+  saksham8/sendit-mysql
 
 # Generate docker container from mongoDB
 docker rm -f mongoContainer
@@ -39,28 +40,27 @@ docker run \
 
 # Generate docker container from microservice image
 docker rm -f microserviceContainer
-docker pull matthewputra/sendItMicroservice
+docker pull saksham8/sendit-microservice
 
-export MESSAGESADDR="microserviceContainer:5200"
+export MICROSERVICESADDR="microserviceContainer:5200"
 
 docker run \
   --network serverNetwork \
   --restart unless-stopped \
-  -e MESSAGESADDR=$MESSAGESADDR \
+  -e MICROSERVICESADDR=$MICROSERVICESADDR \
   --name microserviceContainer \
   --restart unless-stopped \
-  matthewputra/sendItMicroservice
+  saksham8/sendit-microservice
 
 # Generate docker container from gateway image
 #TODO : CHECK WHICH ENVIRONMENTS ARE NEEDED
 docker rm -f gatewayContainer
-docker pull matthewputra/sendItGateway
+docker pull saksham8/sendit-gateway
 
-export TLSCERT=/etc/letsencrypt/live/api.matthewputra.me/fullchain.pem
-export TLSKEY=/etc/letsencrypt/live/api.matthewputra.me/privkey.pem
+export TLSCERT=/etc/letsencrypt/live/api.serversideisfun.me/fullchain.pem
+export TLSKEY=/etc/letsencrypt/live/api.serversideisfun.me/privkey.pem
 export SESSIONKEY="key"
-export SUMMARYADDR="http://summaryContainer:5100"
-export MESSAGESADDR="http://messageContainer:5200"
+export MICROSERVICESADDR="http://microserviceContainer:5200"
 
 docker run \
   -d \
@@ -70,12 +70,11 @@ docker run \
   -e TLSKEY=$TLSKEY \
   -e SESSIONKEY=$SESSIONKEY \
   -e REDISADDR=$REDISADDR \
-  -e MESSAGESADDR=$MESSAGESADDR \
-  -e SUMMARYADDR=$SUMMARYADDR \
+  -e MICROSERVICESADDR=$MICROSERVICESADDR \
   -e DSN=$DSN \
   -p 443:443 \
   -v /etc/letsencrypt:/etc/letsencrypt:ro \
   --name gatewayContainer \
-  matthewputra/sendItGateway
+  saksham8/sendit-gateway
 
 exit

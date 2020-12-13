@@ -3,6 +3,6 @@
 # for your Go API gateway server
 FROM alpine
 RUN apk add --no-cache ca-certificates
-COPY repo /gateway
+COPY gateway /gateway
 EXPOSE 443
 ENTRYPOINT ["/gateway"]

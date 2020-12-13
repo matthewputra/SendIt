@@ -1,20 +1,20 @@
+# !/bin/bash
+
 # Create docker image for gateway
 cd gateway
 GOOS=linux go build
-docker build -t matthewputra/sendItGateway .
+docker build -t saksham8/sendit-gateway .
 go clean
-docker push matthewputra/sendItGateway
+docker push saksham8/sendit-gateway
 
 # Create docker image for mysql
 cd ../db
-docker build -t matthewputra/sendItMySQL .
-docker push matthewputra/sendItMySQL
+docker build -t saksham8/sendit-mysql .
+docker push saksham8/sendit-mysql
 
 # Create docker image for microservice
 cd ../microservice
-docker build -t matthewputra/sendItMicroservice .
-docker push matthewputra/sendItMicroservice
+docker build -t saksham8/sendit-microservice .
+docker push saksham8/sendit-microservice
 
 cd ..
-
-#TODO : Decide to use which Docker

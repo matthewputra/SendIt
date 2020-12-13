@@ -1,0 +1,19 @@
+{
+  "name": "microservice",
+  "version": "1.0.0",
+  "description": "This directory contains the source code for the microservice",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.5",
+    "mongoose-float": "^1.0.4",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
