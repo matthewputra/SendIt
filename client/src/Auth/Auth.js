@@ -97,7 +97,7 @@ export function SignUp(props) {
 
     const handleSignUp = async (event) => {
         event.preventDefault();
-        let url = api.base + api.handlers.login;
+        let url = api.base + api.handlers.signUp;
         let sendData = {
             email: email,
             password: password,

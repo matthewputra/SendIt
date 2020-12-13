@@ -3,6 +3,7 @@ export default {
     testbase: "https://localhost:4000",
     handlers: {
         login: "/login",
+        signUp: "signUp",
         customer: "/customer",
         driver: "/driver",
         order: "/order",
