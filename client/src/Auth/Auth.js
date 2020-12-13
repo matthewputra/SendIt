@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
 
@@ -26,13 +26,39 @@ export function SignIn(props) {
     }
     console.log("Password: " + password);
 
+    const handleSignIn = async (event) => {
+        event.preventDefault();
+        let url = api.base + api.handlers.login;
+        let sendData = {
+            email: email,
+            password: password
+        };
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(sendData),
+            headers: new Headers({
+                "Content-Type": "application/json"
+            })
+        })
+
+        if (response.status !== status.ok) {
+            const err = await response.text;
+            console.log(err)
+        } else {
+            const authToken = response.headers.get("Authorization")
+            localStorage.setItem("Authorization", authToken);
+            const user = await response.json()
+            props.setUser(user)
+        }
+    }
+
     return (
         <>
             <p>sign in</p>
             <form>
                 <input aria-label="email" onChange={handleEmail}></input>
                 <input aria-label="password" onChange={handlePassword}></input>
-                <button>sign in</button>
+                <button onClick={handleSignIn}>sign in</button>
             </form>
         </> 
     );
@@ -44,7 +70,7 @@ export function SignUp(props) {
     const [userName, setUserName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [userType, setUserType] = useState("");
+    const [userType, setUserType] = useState("customer");
 
     const handleEmail = (event) => {
         setEmail(event.target.value);
@@ -72,7 +98,15 @@ export function SignUp(props) {
     const handleSignUp = async (event) => {
         event.preventDefault();
         let url = api.base + api.handlers.login;
-        let sendData = {};
+        let sendData = {
+            email: email,
+            password: password,
+            passwordConf: password,
+            userName: userName,
+            firstName: firstName,
+            lastName: lastName,
+            userType: userType
+        };
         const response = await fetch(url, {
             method: "POST",
             body: JSON.stringify(sendData),
@@ -81,7 +115,7 @@ export function SignUp(props) {
             })
         })
 
-        if (response.status !== status.ok) {
+        if (response.status !== status.created) {
             const err = await response.text;
             console.log(err)
         } else {

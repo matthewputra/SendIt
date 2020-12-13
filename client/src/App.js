@@ -27,7 +27,7 @@ function App() {
   }
 
   let content = <></>;
-  if (!auth) {
+  if (auth) {
     content = <MainPage auth={auth} user={user} setAuth={handleSetAuth}/>
   } else {
     content = <Auth setUser={handleSetUser} setAuth={handleSetAuth}/>
