@@ -9,7 +9,8 @@ import Auth from './Auth/Auth'
 const EXAMPLE_USER = {
   userName: "user",
   firstName: "first",
-  lastName: "last"
+  lastName: "last",
+  userType: "customer"
 }
 
 function App() {

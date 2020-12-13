@@ -28,6 +28,7 @@ function UserProfile(props) {
             <p>user profile</p>
             <p>user name: {props.user.userName}</p>
             <p>first name: {props.user.firstName}</p>
+            <p>you are a {props.user.userType}</p>
         </>
     );
 }
