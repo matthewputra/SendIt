@@ -71,15 +71,13 @@ func main() {
 	REDISADDR := os.Getenv("REDISADDR")
 	DSN := os.Getenv("DSN")
 
-	// TODO: Get PORT for the microservice
+	MICROSERVICEADDR := os.Getenv("MICROSERVICEADDR")
 
-	// TODO: Change this for the microservice
-	messageAddrSlice := strings.Split(MESSAGEADDR, ",")
-	var messageURLs []*url.URL
+	microserviceAddrSlice := strings.Split(MICROSERVICEADDR, ",")
+	var microserviceURLs []*url.URL
 
-	// TODO: Change this for the microservice
-	for _, v := range messageAddrSlice {
-		messageURLs = append(messageURLs, &url.URL{Scheme: "http", Host: v})
+	for _, v := range microserviceAddrSlice {
+		microserviceURLs = append(microserviceURLs, &url.URL{Scheme: "http", Host: v})
 	}
 
 	redisClient := redis.NewClient(&redis.Options{Addr: REDISADDR, Password: "", DB: 0})
@@ -94,8 +92,7 @@ func main() {
 
 	ctx := &handlers.HandlerContext{SigningKey: SESSIONKEY, SessionStore: redisStore, UserStore: users.NewMySQLStore(db)}
 
-	// TODO: Change this for the microservice
-	messagingProxy := &httputil.ReverseProxy{Director: SpecificDirector(ctx, messageURLs)}
+	microserviceProxy := &httputil.ReverseProxy{Director: SpecificDirector(ctx, microserviceURLs)}
 
 	mux := http.NewServeMux()
 
@@ -105,10 +102,9 @@ func main() {
 	mux.HandleFunc("/v1/driver", ctx.NewDriverHandler)
 	mux.HandleFunc("/v1/driver/login", ctx.LoginDriverHandler)
 
-	// TODO: Change this according to the microservice
-	mux.Handle("/v1/channels", messagingProxy)
-	mux.Handle("/v1/channels/", messagingProxy)
-	mux.Handle("/v1/messages/", messagingProxy)
+	mux.Handle("/v1/channels", microserviceProxy)
+	mux.Handle("/v1/channels/", microserviceProxy)
+	mux.Handle("/v1/messages/", microserviceProxy)
 
 	wrappedMux := handlers.NewCORS(mux)
 
