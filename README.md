@@ -23,37 +23,21 @@ Sending packages to friends and family can take a lot of time, especially in the
 
 ### End Points
 
-* ``` /v1/customer/login```
-  * POST: Log in customer and returns a session ID
-    * 200: Successfully logs in a customer, takes JSON
+* ```/v1/signup``` 
+  * POST: Creates a new user and returns the user as a JSON object
+    * 201: Successfully creates a new user
+    * 400: User data is invalid
+    * 415: Invalid request body
+    * 500: Internal server error
+* ```/v1/login```
+  * POST: Log in a user and returns the user as a JSON object
+    * 200: Successfully logs in a user, takes JSON
     * 401: Fail to authenticate the credentials
     * 415: Invalid request body
     * 500: Internal server error
-  * DELETE: Log out a customer
+  * DELETE: Log out a user
     * 200: Successfully logs out a customer
     * 401: Invalid session ID
-    * 500: Internal server error
-* ``` /v1/driver/login```
-  * POST: Log in driver and returns a session ID
-    * 200: Successfully logs in a driver, takes JSON
-    * 401: Fail to authenticate the credentials
-    * 415: Invalid request body
-    * 500: Internal server error
-  * DELETE: Log out a driver
-    * 200: Successfully logs out a driver
-    * 401: Invalid session ID
-    * 500: Internal server error
-* ```/v1/customer``` 
-  * POST: Create new customer, takes JSON
-    * 201: Successfully creates a new customer
-    * 400: Customer data is invalid
-    * 415: Invalid request body
-    * 500: Internal server error
-* ```/v1/driver```
-  * POST: Create new driver, takes JSON
-    * 201: Successfully creates a new driver
-    * 400: Driver data is invalid
-    * 415: Invalid request body
     * 500: Internal server error
 * ```/v1/customer/{customerId}/order``` 
   * POST: Create new order, takes JSON

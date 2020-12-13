@@ -97,10 +97,8 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Handlers for logging in and signing up new customers/drivers
-	mux.HandleFunc("/v1/customer", ctx.NewCustomerHandler)
-	mux.HandleFunc("/v1/customer/login", ctx.LoginCustomerHandler)
-	mux.HandleFunc("/v1/driver", ctx.NewDriverHandler)
-	mux.HandleFunc("/v1/driver/login", ctx.LoginDriverHandler)
+	mux.HandleFunc("/v1/signup", ctx.UserSignUpHandler)
+	mux.HandleFunc("/v1/login", ctx.UserLoginHandler)
 
 	// TODO: these need to be changed according to new endpoints
 	mux.Handle("/v1/channels", microserviceProxy)
