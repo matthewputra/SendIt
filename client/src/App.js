@@ -68,20 +68,18 @@ function App() {
     content = <Auth handleSetErr={handleSetErr} handleSetUser={handleSetUser}  handleSetAuth={handleSetAuth}/>
   }
   return (
-    <BrowserRouter>
-      <Container>
-        <header>
-          SendIt App
-        </header>
-        <main>
-          {content}
-          {renderErr}
-        </main>
-        <footer>
-          App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
-        </footer>
-      </Container>
-    </BrowserRouter>
+    <Container>
+      <header>
+        SendIt App
+      </header>
+      <main>
+        {content}
+        {renderErr}
+      </main>
+      <footer>
+        App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
+      </footer>
+    </Container>
   );
 }
 
