@@ -10,6 +10,7 @@ export default {
         orderList: "/orderList",
         accept: "/accept",
         complete: "/complete",
-        earning: "/earnings"
+        earning: "/earnings",
+        available:"/available"
     }
 }

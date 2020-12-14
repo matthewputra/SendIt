@@ -73,8 +73,8 @@ export function SignIn(props) {
         <>
             <h2>sign in</h2>
             <form>
-                <input aria-label="email" onChange={handleEmail}></input>
-                <input aria-label="password" onChange={handlePassword}></input>
+                <input placeholder="email" aria-label="email" onChange={handleEmail}></input>
+                <input placeholder="password" type="password" aria-label="password" onChange={handlePassword}></input>
                 <button onClick={handleSignIn}>sign in</button>
             </form>
         </> 
@@ -150,12 +150,12 @@ export function SignUp(props) {
         <>
         <h2>sign up</h2>
         <form>
-            <input aria-label="email" onChange={handleEmail}></input>
-            <input aria-label="password" onChange={handlePassword}></input>
-            <input aria-label="username" onChange={handleUserName} />
-            <input aria-label="first name" onChange={handleFirstName} />
-            <input aria-label="last name" onChange={handleLastName} />
-            <input aria-label="user type" onChange={handleUserType} />
+            <input placeholder="email" aria-label="email" onChange={handleEmail}></input>
+            <input placeholder="password" type="password" aria-label="password" onChange={handlePassword}></input>
+            <input placeholder="username" aria-label="username" onChange={handleUserName} />
+            <input placeholder="first name" aria-label="first name" onChange={handleFirstName} />
+            <input placeholder="last name" aria-label="last name" onChange={handleLastName} />
+            <input placeholder="usertype (customer or driver)" aria-label="user type" onChange={handleUserType} />
             {/* <input type="radio" id={type.customer} name="userType" value={type.customer}>Customer</input>
             <input type="radio" id={type.driverr} name="userType" value={type.driverr}>Driver</input> */}
             <button onClick={handleSignUp}>sign up</button>

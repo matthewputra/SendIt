@@ -5,7 +5,7 @@ import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
 import userType from '../constants/userType'
 
-const TEST_URL = "https://api.serversideisfun.me/v1/customer/4/order"
+const header = ["OrderID", "Date Created", "Status"];
 
 export default function MainPage(props) {
     const [page, setPage] = useState("Profile");
@@ -26,7 +26,7 @@ export default function MainPage(props) {
         if (props.user.type === userType.customer) {
             url = api.base + api.handlers.customer + "/" + props.user.id + api.handlers.order
         } else {
-            url = api.base + api.handlers.driver + "/" + props.user.id + api.handlers.orderList
+            url = api.base + api.handlers.driver + "/" + api.handlers.available
         }
         content = <OrderPage user={props.user} url={url} auth={props.auth} handleSetErr={props.handleSetErr}/>
     }
@@ -63,9 +63,10 @@ function UserProfile(props) {
     }
     return (
         <>
-            <p>user profile</p>
+            <h3>user profile</h3>
             <p>user name: {props.user.userName}</p>
             <p>first name: {props.user.firstName}</p>
+            <p>last name: {props.user.lastName}</p>
             <p>you are a {props.user.type}</p>
             <button onClick={handleLogOut}>log out</button>
         </>
@@ -156,7 +157,9 @@ function OrderPage(props) {
         }
     }
     
-    const renderOrderList = orderList.map(order => {return <p key={order._id}> {order._id} {order.customerID} {Date(order.createdAt)} {order.status}</p>})
+    const orderListHeader = header.map((col) => <th key={col}>{col}</th>)
+
+    const renderOrderList = orderList.map(order => {return <tr key={order._id}> <td>{order._id}</td> <td>{Date(order.createdAt)}</td> <td>{order.status}</td></tr>})
 
     let specificContent = <></>
     if (props.user.type === userType.customer) {
@@ -169,7 +172,14 @@ function OrderPage(props) {
     return (
         <>
             <h3>order page</h3>
-            {renderOrderList}
+            <table className='table table-bordered'>
+                <thead>
+                    <tr>{orderListHeader}</tr>
+                </thead>
+                <tbody>
+                {renderOrderList}
+                </tbody>
+            </table>
             {specificContent}
         </>
     );
@@ -178,10 +188,10 @@ function OrderPage(props) {
 function AddOrder(props) {
     return (
         <form>
-            <input aria-label="price" onChange={props.handlePrice}></input>
-            <input aria-label="range" onChange={props.handleRange}></input>
-            <input aria-label="pick up" onChange={props.handlePickUp}/>
-            <input aria-label="drop off" onChange={props.handleDropOff}/>
+            <input placeholder="price" aria-label="price" onChange={props.handlePrice}></input>
+            <input placeholder="range" aria-label="range" onChange={props.handleRange}></input>
+            <input placeholder="pick up location" aria-label="pick up" onChange={props.handlePickUp}/>
+            <input placeholder="drop off location" aria-label="drop off" onChange={props.handleDropOff}/>
             <button onClick={props.addOrder}>add order</button>
             <button onClick={props.updateList}>update order list</button>
         </form>
@@ -196,6 +206,8 @@ function ProcessOrder(props) {
     const handleOrderID = (event) => {
         setOrderID(event.target.value)
     }
+
+    console.log(orderID);
 
     const handleOrderDetail = async (event) => {
         event.preventDefault();
@@ -238,7 +250,7 @@ function ProcessOrder(props) {
     }
 
     let completeOrderButton = <button onClick={handleOrderDetail}>accept order</button>
-    if (!accepted) {
+    if (accepted) {
         completeOrderButton = <button onClick={completeOrder}>complete order</button>
     }
 
