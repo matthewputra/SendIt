@@ -71,7 +71,7 @@ export function SignIn(props) {
 
     return (
         <>
-            <p>sign in</p>
+            <h2>sign in</h2>
             <form>
                 <input aria-label="email" onChange={handleEmail}></input>
                 <input aria-label="password" onChange={handlePassword}></input>
@@ -148,7 +148,7 @@ export function SignUp(props) {
 
     return (
         <>
-        <p>sign up</p>
+        <h2>sign up</h2>
         <form>
             <input aria-label="email" onChange={handleEmail}></input>
             <input aria-label="password" onChange={handlePassword}></input>

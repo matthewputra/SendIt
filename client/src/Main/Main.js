@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
-import { Route, Switch } from 'react-router-dom'
 
 import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
+import userType from '../constants/userType'
 
 const TEST_URL = "https://api.serversideisfun.me/v1/customer/4/order"
 
@@ -23,7 +23,7 @@ export default function MainPage(props) {
         content = <UserProfile user={props.user} handleSetErr={props.handleSetErr} handleSetUser={props.handleSetUser}  handleSetAuth={props.handleSetAuth}/>
     } else if (page === "Order") {
         let url = "";
-        if (props.user.type === "customer") {
+        if (props.user.type === userType.customer) {
             url = api.base + api.handlers.customer + "/" + props.user.id + api.handlers.order
         } else {
             url = api.base + api.handlers.driver + "/" + props.user.id + api.handlers.orderList
@@ -33,7 +33,7 @@ export default function MainPage(props) {
 
     return (
     <div>
-        <p>main page</p>
+        <h2>main page</h2>
         {content}
         <button onClick={changeToOrder}>show order list</button>
         <button onClick={changeToProfile}>show user profile</button>
@@ -103,13 +103,10 @@ function OrderPage(props) {
     const handlePickUp = (event) => {
         setPickUp(event.target.value);
     }
-    //console.log("Pickup: " +pickUp);
 
     const handleDropOff = (event) => {
         setDropOff(event.target.value)
     }
-
-    //console.log("dropoff: " +dropOff);
 
     const addOrder = async (event) => {
         event.preventDefault();
@@ -159,20 +156,101 @@ function OrderPage(props) {
         }
     }
     
-    const renderOrderList = orderList.map(order => {return <p key={order._id}> {order.price} {order.range} {order.pickupLocation} {order.dropoffLocation}</p>})
+    const renderOrderList = orderList.map(order => {return <p key={order._id}> {order._id} {order.customerID} {Date(order.createdAt)} {order.status}</p>})
+
+    let specificContent = <></>
+    if (props.user.type === userType.customer) {
+        specificContent = <AddOrder handlePrice={handlePrice} handleRange={handleRange} handlePickUp={handlePickUp} 
+        handleDropOff={handleDropOff} addOrder={addOrder} updateList={updateList}/>
+    } else {
+        specificContent = <ProcessOrder updateList={updateList} handleSetErr={props.handleSetErr} auth={props.auth}/>
+    }
 
     return (
         <>
+            <h3>order page</h3>
             {renderOrderList}
-            <p>order page</p>
-            <form>
-                <input aria-label="price" onChange={handlePrice} value={price}></input>
-                <input aria-label="range" onChange={handleRange} value={range}></input>
-                <input aria-label="pick up" onChange={handlePickUp} value={pickUp}/>
-                <input aria-label="drop off" onChange={handleDropOff} value={dropOff}/>
-                <button onClick={addOrder}>add order</button>
-                <button onClick={updateList}>update order list</button>
-            </form>
+            {specificContent}
         </>
+    );
+}
+
+function AddOrder(props) {
+    return (
+        <form>
+            <input aria-label="price" onChange={props.handlePrice}></input>
+            <input aria-label="range" onChange={props.handleRange}></input>
+            <input aria-label="pick up" onChange={props.handlePickUp}/>
+            <input aria-label="drop off" onChange={props.handleDropOff}/>
+            <button onClick={props.addOrder}>add order</button>
+            <button onClick={props.updateList}>update order list</button>
+        </form>
+    );
+}
+
+function ProcessOrder(props) {
+    const [orderID, setOrderID] = useState("");
+    const [order, setOrder] = useState({});
+    const [accepted, setAccepted] = useState(false);
+
+    const handleOrderID = (event) => {
+        setOrderID(event.target.value)
+    }
+
+    const handleOrderDetail = async (event) => {
+        event.preventDefault();
+
+        const response = await fetch(api.base + api.handlers.driver + api.handlers.accept + "/" + orderID, {
+            method: "PATCH",
+            headers: new Headers({
+                "Authorization": props.auth
+            })
+        });
+
+        if (response.status !== status.ok) {
+            const err = await response.text();
+            props.handleSetErr(err);
+        } else {
+            const orderInfo = response.json();
+            setOrder(orderInfo)
+            props.handleSetErr("");
+            setAccepted(true);
+        }
+    }
+
+    const completeOrder = async (event) => {
+        event.preventDefault();
+        const response = await fetch(api.base + api.handlers.driver + api.handlers.complete + "/" + orderID, {
+            method: "PATCH",
+            headers: new Headers({
+                "Authorization": props.auth
+            })
+        });
+
+        if (response.status !== status.ok) {
+            const err = await response.text();
+            props.handleSetErr(err);
+        } else {
+            setAccepted(false);
+            props.handleSetErr("");
+            props.updateList(event);
+        }
+    }
+
+    let completeOrderButton = <button onClick={handleOrderDetail}>accept order</button>
+    if (!accepted) {
+        completeOrderButton = <button onClick={completeOrder}>complete order</button>
+    }
+
+    return (<>
+        <div>
+            <form>
+                <input aria-label="order id" onChange={handleOrderID}></input>
+                {completeOrderButton}
+            </form>
+            <p>Order info</p>
+            <p>{order._id} {order.customerID} {Date(order.createdAt)} {order.driverID} {order.range} {order.price} {order.pickupLocation} {order.dropoffLocation}</p>
+        </div>
+    </>
     );
 }

@@ -70,7 +70,7 @@ function App() {
   return (
     <Container>
       <header>
-        SendIt App
+        <h1>SendIt App</h1>
       </header>
       <main>
         {content}
