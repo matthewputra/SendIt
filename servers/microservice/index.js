@@ -40,10 +40,10 @@ const RequestWrapper = (handler, SchemeAndDbForwarder) => {
 const methodNotAllowed = (req, res, next) => res.status(405).send("Request method not allowed");
 
 // API endpoints for specific customer
-app.route("/v1/customer/:customerID/order")
-    .get(RequestWrapper(getCustomerOrders, { Order, mysqlConn }))
-    .post(RequestWrapper(createNewOrderHandler, { Order }))
-    .all(methodNotAllowed);
+// app.route("/v1/customer/:customerID/order")
+app.get("/v1/customer/:customerID/order", RequestWrapper(getCustomerOrders, { Order, mysqlConn }))
+app.post("/v1/customer/:customerID/order", RequestWrapper(createNewOrderHandler, { Order }))
+app.all("/v1/customer/:customerID/order", methodNotAllowed);
 
 // API endpoints for a specific order (customer-side)
 app.route("/v1/customer/:customerID/order/:orderID")

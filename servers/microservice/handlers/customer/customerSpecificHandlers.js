@@ -35,7 +35,7 @@ const createNewOrderHandler = async (req, res, { Order }) => {
         return;
     }
 
-    var userID = authUser.id;
+    var customerID = authUser.id;
     
     const driverID = -1;
     const { price, range, pickupLocation, dropoffLocation } = req.body;
@@ -54,7 +54,7 @@ const createNewOrderHandler = async (req, res, { Order }) => {
 
     const newOrder = {
         driverID,
-        userID,
+        customerID,
         createdAt,
         status,
         price,
@@ -67,7 +67,7 @@ const createNewOrderHandler = async (req, res, { Order }) => {
     const query = new Order(newOrder);
     query.save((err, createdOrder) => {
         if (err) {
-            res.status(500).send("Unable to create order!");
+            res.status(500).send("Unable to create order! - " + err);
             return;
         }
         res.setHeader("Content-Type", "application/json");

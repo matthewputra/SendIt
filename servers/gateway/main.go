@@ -71,7 +71,10 @@ func main() {
 	REDISADDR := os.Getenv("REDISADDR")
 	DSN := os.Getenv("DSN")
 
+	log.Printf("%s", SESSIONKEY)
+
 	MICROSERVICEADDR := os.Getenv("MICROSERVICEADDR")
+	log.Printf("%s", MICROSERVICEADDR)
 
 	microserviceAddrSlice := strings.Split(MICROSERVICEADDR, ",")
 	var microserviceURLs []*url.URL

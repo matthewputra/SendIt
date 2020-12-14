@@ -8,20 +8,21 @@ const getOrderInformation = async (req, res, { Order }) => {
     }
 
     // Get params
-    const customerID = req.params.customerID
+    // const customerID = req.params.customerID
+    const customerID = authUser.id
     const orderID = req.params.orderID
 
     // Check given customerID
-    if (customerID !== authUser.id) {
-        res.status(400).send("invalid customerID")
-        return
-    }
+    // if (customerID !== authUser.id) {
+    //     res.status(400).send("invalid customerID " + customerID + "_" + authUser.id)
+    //     return
+    // }
 
     // Get Order
     try {
         await Order.findById(orderID, function (err, order) {
             if (err) {
-                res.status(404).send("order not found")
+                res.status(404).send("order not found - " + err)
                 return
             }
             res.status(200).json(order)
@@ -46,18 +47,12 @@ const updateOrderInformation = async (req, res, { Order }) => {
     const customerID = req.params.customerID
     const orderID = req.params.orderID
 
-    // Check given customerID
-    if (customerID !== authUser.id) {
-        res.status(400).send("invalid customerID")
-        return
-    }
-
     // Update order
     try {
         // Check order status
         await Order.findById(orderID, function (err, order) {
             if (err) {
-                res.status(404).send("order not found")
+                res.status(404).send("order not found - " + err)
                 return
             }
             if (order.status !== "submitted") {
