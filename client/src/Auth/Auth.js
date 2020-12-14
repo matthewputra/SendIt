@@ -1,12 +1,28 @@
 import React, { useState } from 'react'
 import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
+import type from '../constants/userType'
+
+// const EXAMPLE_NEW_USER = {
+//     email: "test3@test.com",
+//     password: "password",
+//     passwordConf: "password",
+//     userName: "hahaha",
+//     firstName: "firstlol",
+//     lastName: "lastlol",
+//     type: "customer"
+// };
+
+// const EXAMPLE_LOGIN = {
+//     email: "test3@test.com",
+//     password: "password"
+// }
 
 export default function Auth(props) {
     return (
         <>
-        <SignIn />
-        <SignUp />
+        <SignIn handleSetErr={props.handleSetErr} handleSetUser={props.handleSetUser} handleSetAuth={props.handleSetAuth}/>
+        <SignUp handleSetErr={props.handleSetErr} handleSetUser={props.handleSetUser} handleSetAuth={props.handleSetAuth}/>
         </>
     );
 }
@@ -18,13 +34,11 @@ export function SignIn(props) {
     const handleEmail = (event) => {
         setEmail(event.target.value);
     }
-    console.log("Email: " + email);
 
     const handlePassword = (event) => {
         setPassword(event.target.value);
         console.log(password);
     }
-    console.log("Password: " + password);
 
     const handleSignIn = async (event) => {
         event.preventDefault();
@@ -33,6 +47,7 @@ export function SignIn(props) {
             email: email,
             password: password
         };
+        //let sendData = EXAMPLE_LOGIN;
         const response = await fetch(url, {
             method: "POST",
             body: JSON.stringify(sendData),
@@ -42,13 +57,15 @@ export function SignIn(props) {
         })
 
         if (response.status !== status.ok) {
-            const err = await response.text;
-            console.log(err)
+            const err = await response.text();
+            props.handleSetErr(err)
         } else {
             const authToken = response.headers.get("Authorization")
             localStorage.setItem("Authorization", authToken);
-            const user = await response.json()
-            props.setUser(user)
+            props.handleSetAuth(authToken)
+            const user = await response.json();
+            props.handleSetUser(user)
+            props.handleSetErr("");
         }
     }
 
@@ -70,7 +87,7 @@ export function SignUp(props) {
     const [userName, setUserName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [userType, setUserType] = useState("customer");
+    const [userType, setUserType] = useState("");
 
     const handleEmail = (event) => {
         setEmail(event.target.value);
@@ -105,8 +122,9 @@ export function SignUp(props) {
             userName: userName,
             firstName: firstName,
             lastName: lastName,
-            userType: userType
+            type: userType
         };
+        //let sendData = EXAMPLE_NEW_USER;
         const response = await fetch(url, {
             method: "POST",
             body: JSON.stringify(sendData),
@@ -116,13 +134,15 @@ export function SignUp(props) {
         })
 
         if (response.status !== status.created) {
-            const err = await response.text;
-            console.log(err)
+            const err = await response.text();
+            props.handleSetErr(err)
         } else {
             const authToken = response.headers.get("Authorization")
             localStorage.setItem("Authorization", authToken);
+            props.handleSetAuth(authToken)
             const user = await response.json()
-            props.setUser(user)
+            props.handleSetUser(user)
+            props.handleSetErr("");
         }
     }
 
@@ -136,6 +156,8 @@ export function SignUp(props) {
             <input aria-label="first name" onChange={handleFirstName} />
             <input aria-label="last name" onChange={handleLastName} />
             <input aria-label="user type" onChange={handleUserType} />
+            {/* <input type="radio" id={type.customer} name="userType" value={type.customer}>Customer</input>
+            <input type="radio" id={type.driverr} name="userType" value={type.driverr}>Driver</input> */}
             <button onClick={handleSignUp}>sign up</button>
         </form>
         </>

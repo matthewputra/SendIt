@@ -1,9 +1,9 @@
 export default {
-    base: "https://placeholder.com/v1",
+    base: "https://api.serversideisfun.me/v1",
     testbase: "https://localhost:4000",
     handlers: {
         login: "/login",
-        signUp: "signUp",
+        signUp: "/signup",
         customer: "/customer",
         driver: "/driver",
         order: "/order",
