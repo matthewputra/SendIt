@@ -10,7 +10,7 @@ const getCustomerOrders = async (req, res, { Order, mysqlConn }) => {
     var userID = authUser.id;
     var customerID = req.params.customerID;
     
-    const sqlQuery = 'SELECT usertype FROM Users WHERE id = ' + customerID;
+    const sqlQuery = 'SELECT usertype FROM Users WHERE id = ' + userID;
     const rows = await mysqlConn.query(sqlQuery);
     if (rows.length == 0) {
         res.status(404).send("CustomerID not found");
@@ -40,6 +40,7 @@ const createNewOrderHandler = async (req, res, { Order }) => {
     const driverID = -1;
     const { price, range, pickupLocation, dropoffLocation } = req.body;
     const createdAt = new Date();
+    const editedAt = new Date();
     const status = "submitted";
 
     if (!pickupLocation) {
@@ -59,7 +60,8 @@ const createNewOrderHandler = async (req, res, { Order }) => {
         price,
         range,
         pickupLocation,
-        dropoffLocation
+        dropoffLocation,
+        editedAt
     };
 
     const query = new Order(newOrder);

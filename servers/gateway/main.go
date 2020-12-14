@@ -100,10 +100,12 @@ func main() {
 	mux.HandleFunc("/v1/signup", ctx.UserSignUpHandler)
 	mux.HandleFunc("/v1/login", ctx.UserLoginHandler)
 
-	// TODO: these need to be changed according to new endpoints
-	mux.Handle("/v1/channels", microserviceProxy)
-	mux.Handle("/v1/channels/", microserviceProxy)
-	mux.Handle("/v1/messages/", microserviceProxy)
+	mux.Handle("/v1/customer/", microserviceProxy)
+	mux.Handle("/v1/driver/", microserviceProxy)
+	mux.Handle("/v1/driver/accept/", microserviceProxy)
+	mux.Handle("/v1/driver/complete/", microserviceProxy)
+	mux.Handle("/v1/driver/complete", microserviceProxy)
+	mux.Handle("/v1/driver/earnings", microserviceProxy)
 
 	wrappedMux := handlers.NewCORS(mux)
 

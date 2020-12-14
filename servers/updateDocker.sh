@@ -24,10 +24,10 @@ docker run \
   -d \
   --network serverNetwork \
   -v /etc/letsencrypt:/etc/letsencrypt:ro \
-  -p 3306:3306 \
   --name mysqlContainer \
   -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
   -e MYSQL_DATABASE=$MYSQL_DATABASE \
+  --restart unless-stopped \
   saksham8/sendit-mysql
 
 # Generate docker container from mongoDB
@@ -65,7 +65,6 @@ export MICROSERVICESADDR="http://microserviceContainer:5200"
 docker run \
   -d \
   --network serverNetwork \
-  --restart unless-stopped \
   -e TLSCERT=$TLSCERT \
   -e TLSKEY=$TLSKEY \
   -e SESSIONKEY=$SESSIONKEY \
@@ -74,7 +73,9 @@ docker run \
   -e DSN=$DSN \
   -p 443:443 \
   -v /etc/letsencrypt:/etc/letsencrypt:ro \
+  --restart unless-stopped \
   --name gatewayContainer \
   saksham8/sendit-gateway
 
+exit
 exit

@@ -3,7 +3,7 @@
 # Create docker image for gateway
 cd gateway
 GOOS=linux go build
-docker build -t saksham8/sendit-gateway .
+docker build --no-cache -t saksham8/sendit-gateway .
 go clean
 docker push saksham8/sendit-gateway
 

@@ -12,13 +12,13 @@ import (
 	"github.com/matthewputra/SendIt/servers/gateway/sessions"
 )
 
-// NewCustomerHandler Handles POST: creating a new customer, taking JSON
+// UserSignUpHandler Handles POST: creating a new customer, taking JSON
 func (ctx *HandlerContext) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
 		if r.Header.Get("Content-Type") != "application/json" {
 			// 415 Invalid Request Body
-			http.Error(w, "Incorrect Content-Type", http.StatusUnsupportedMediaType)
+			http.Error(w, "Invalid Content-Type", http.StatusUnsupportedMediaType)
 			return
 		}
 
@@ -41,7 +41,7 @@ func (ctx *HandlerContext) UserSignUpHandler(w http.ResponseWriter, r *http.Requ
 		validatedUser, err := createdUser.ToUser()
 		if err != nil {
 			// 400
-			http.Error(w, "User data is invalid", http.StatusBadRequest)
+			http.Error(w, "User data is invalid - "+err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -49,7 +49,7 @@ func (ctx *HandlerContext) UserSignUpHandler(w http.ResponseWriter, r *http.Requ
 		insertedUser, err := ctx.UserStore.Insert(validatedUser)
 		if err != nil {
 			// 500
-			http.Error(w, "Error inserting user", http.StatusInternalServerError)
+			http.Error(w, "Error inserting user - "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -70,14 +70,14 @@ func (ctx *HandlerContext) UserSignUpHandler(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-// Handles POST: Log in user and returns a session ID
+// UserLoginHandler Handles POST: Log in user and returns a session ID
 //		   DELETE: Log out a user
 func (ctx *HandlerContext) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Check Content-Type is JSON
-		if r.URL.Query().Get("Content-Type") != "application/json" {
+		if r.Header.Get("Content-Type") != "application/json" {
 			// 415 Invalid Request Body
-			http.Error(w, "Request body must be in JSON", http.StatusUnsupportedMediaType)
+			http.Error(w, "Request body must be in JSON - "+r.Header.Get("Content-Type"), http.StatusUnsupportedMediaType)
 			return
 		}
 
@@ -135,7 +135,9 @@ func (ctx *HandlerContext) UserLoginHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error ending session and logging out", http.StatusInternalServerError)
 			return
 		}
+		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("user successfully logged out"))
 
 	} else {
 		http.Error(w, "Must be a POST or DELETE request method", http.StatusMethodNotAllowed)

@@ -26,6 +26,7 @@ type User struct {
 type Credentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	UserType string `json:"type"`
 }
 
 //NewUser represents a new user signing up for an account
@@ -36,7 +37,7 @@ type NewUser struct {
 	UserName     string `json:"userName"`
 	FirstName    string `json:"firstName"`
 	LastName     string `json:"lastName"`
-	UserType	 string `json:"type"`
+	UserType     string `json:"type"`
 }
 
 //Updates represents allowed updates to a user profile
@@ -72,8 +73,8 @@ func (nu *NewUser) Validate() error {
 		return fmt.Errorf("Enter a username with no spaces and non-zero length")
 	}
 
-	if nu.UserType != CustomerType || nu.UserType != DriverType {
-		return fmt.Errorf("UserType must be of type string with value of %v or %v", CustomerType, DriverType)
+	if nu.UserType != "customer" && nu.UserType != "driver" {
+		return fmt.Errorf("UserType must be of type string with value of %v or %v - %v", CustomerType, DriverType, nu.UserType)
 	}
 
 	return nil

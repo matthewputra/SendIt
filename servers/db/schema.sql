@@ -5,7 +5,7 @@ create table if not exists Users (
     UserName varchar(255) not null,
     FirstName varchar(255) not null,
     LastName varchar(255) not null,
-    UserType varchar(5) not null 
+    UserType varchar(10) not null 
 );
 
 CREATE INDEX username_index ON Users (UserName);

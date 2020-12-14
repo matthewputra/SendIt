@@ -19,7 +19,7 @@ var mysqlConn = mysql.createPool({
                             password: 'serversidedb',
                             database: 'sendItMySqlDB'});
 
-const mongoEngpoint = "mongodb://redisContainer:27017/sendItMongo?authSource=admin";
+const mongoEngpoint = "mongodb://mongoContainer:27017/sendItMongo?authSource=admin";
 const port = 5200;
 
 const Order = mongoose.model("Order", OrderSchema)
@@ -48,7 +48,7 @@ app.route("/v1/customer/:customerID/order")
 // API endpoints for a specific order (customer-side)
 app.route("/v1/customer/:customerID/order/:orderID")
     .get(RequestWrapper(getOrderInformation, { Order }))
-    .update(RequestWrapper(updateOrderInformation, { Order }))
+    .patch(RequestWrapper(updateOrderInformation, { Order }))
     .all(methodNotAllowed);
 
 // API endpoints for specific driver

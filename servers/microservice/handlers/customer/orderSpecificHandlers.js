@@ -65,7 +65,7 @@ const updateOrderInformation = async (req, res, { Order }) => {
                 return
             }
             // Update
-            Order.findByIdAndUpdate(orderID, {status: "cancelled"}, {new: true}, function (err, newOrder) {
+            Order.findByIdAndUpdate(orderID, {status: "cancelled", editedAt: new Date()}, {new: true}, function (err, newOrder) {
                 if (err) {
                     res.status(500).send('unable to update order')
                     return
