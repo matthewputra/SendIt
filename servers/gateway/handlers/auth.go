@@ -127,6 +127,17 @@ func (ctx *HandlerContext) UserLoginHandler(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusOK)
 		w.Write(userJSON)
 
+	} else if r.Method == "GET" {
+		var sessionState SessionState
+		_, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionStore, &sessionState)
+		if err != nil {
+			http.Error(w, "user is not logged in", http.StatusUnauthorized)
+			return
+		}
+		userJSON, _ := json.Marshal(sessionState.User)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(userJSON)
 	} else if r.Method == "DELETE" {
 		// Ends session of the current user
 		_, err := sessions.EndSession(r, ctx.SigningKey, ctx.SessionStore)
