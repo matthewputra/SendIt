@@ -5,7 +5,8 @@ const { OrderSchema } = require("./schemas/order");
 const { getCustomerOrders, 
         createNewOrderHandler } = require("./handlers/customer/customerSpecificHandlers");
 const { getAssignedOrdersHandlers, 
-        getCompletedOrdersHandlers, 
+        getCompletedOrdersHandlers,
+        getAvailableOrdersHandlers,
         getTotalEarnings } = require("./handlers/driver/driverSpecificHandlers");
 const { acceptOrderHandler, 
         completeOrderHandler } = require("./handlers/driver/orderSpecificHandlers")
@@ -54,6 +55,10 @@ app.route("/v1/customer/:customerID/order/:orderID")
 // API endpoints for specific driver
 app.route("/v1/driver/:driverID/orderList")
     .get(RequestWrapper(getAssignedOrdersHandlers, { Order, mysqlConn }))
+    .all(methodNotAllowed);
+
+app.route("/v1/driver/available")
+    .get(RequestWrapper(getAvailableOrdersHandlers, { Order }))
     .all(methodNotAllowed);
 
 app.route("/v1/driver/complete")

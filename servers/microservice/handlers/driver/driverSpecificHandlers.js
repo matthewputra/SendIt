@@ -51,6 +51,23 @@ const getCompletedOrdersHandlers = async (req, res, { Order }) => {
     }
 }
 
+// Handles GET request for a driver to get available orders
+const getAvailableOrdersHandlers = async (req, res, { Order }) => {
+    let authUser = JSON.parse(req.get("X-User"));
+    if (!authUser) {
+        res.status(401).send("Unauthorized user")
+        return;
+    }
+
+    try {
+        const completedOrders = await Order.find( { status: "submitted" });
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).json(completedOrders);
+    } catch (e) {
+        res.status(500).send("Internal Server Error - " + e);
+    }
+}
+
 // Handles GET request for a specific driver to get total earnings
 const getTotalEarnings = async (req, res, { Order }) => {
     let authUser = JSON.parse(req.get("X-User"));
@@ -75,4 +92,4 @@ const getTotalEarnings = async (req, res, { Order }) => {
     }
 }
 
-module.exports = { getAssignedOrdersHandlers, getCompletedOrdersHandlers, getTotalEarnings }
+module.exports = { getAssignedOrdersHandlers, getCompletedOrdersHandlers, getAvailableOrdersHandlers ,getTotalEarnings }
