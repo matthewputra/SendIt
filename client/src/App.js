@@ -79,7 +79,7 @@ function App() {
       </main>
       <footer class="page-footer font-small blue">
         <div class="footer-copyright text-center py-3" id='footer'>
-        App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
+        App created by Brandon Z. Ly, Matthew Putra, Saksham Aggarwal and Khoa Luong
         </div>
       </footer>
       {/* <footer class='footer'>
