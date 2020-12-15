@@ -288,10 +288,11 @@ function OrderPage(props) {
     const orderListHeader = header.map((col) => <th key={col}>{col}</th>)
 
     const renderOrderList = orderList.map(order => {
+        const date = new Date(order.createdAt);
         return (
             <tr key={order._id}> 
                 <td>{order._id}</td> 
-                <td>{Date(order.createdAt)}</td>
+                <td>{date.toUTCString()}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
                 <td>{order.price}</td>
@@ -302,10 +303,11 @@ function OrderPage(props) {
     })
 
     const renderPendingOrderList = pendingOrderList.map(order => {
+        const date = new Date(order.editedAt);
         return (
             <tr key={order._id}> 
                 <td>{order._id}</td> 
-                <td>{Date(order.editedAt)}</td>
+                <td>{date.toUTCString()}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
                 <td>{order.price}</td>
@@ -316,10 +318,11 @@ function OrderPage(props) {
     })
 
     const renderCompletedOrderList = completedOrderList.map(order => {
+        const date = new Date(order.editedAt);
         return (
             <tr key={order._id}> 
                 <td>{order._id}</td> 
-                <td>{Date(order.editedAt)}</td>
+                <td>{date.toUTCString()}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
                 <td>{order.price}</td>
