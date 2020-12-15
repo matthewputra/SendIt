@@ -366,7 +366,7 @@ function OrderPage(props) {
             <>
             <div>
                 <div class="order-page">
-                    <h3>Available Orders' page</h3>
+                    <h3>My Orders' page</h3>
                     <table className='table table-bordered'>
                         <thead>
                             {orderListHeader}
