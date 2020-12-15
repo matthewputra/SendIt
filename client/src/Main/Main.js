@@ -6,7 +6,7 @@ import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
 import userType from '../constants/userType'
 
-const header = ["OrderID", "Date Created", "Pick up Location", "Drop off Location", "Price", "Range (mi)", "Status"];
+const header = ["OrderID", "Date Created", "Pick up Location", "Drop off Location", "Price (Base: $2/mi)", "Range (mi)", "Status"];
 
 export default function MainPage(props) {
     const [page, setPage] = useState("Profile");
@@ -57,10 +57,7 @@ export default function MainPage(props) {
                 </div>
             </div>
         </div>
-
         {content}
-        {/* <button onClick={changeToOrder}>show order list</button> */}
-        {/* <button onClick={changeToProfile}>show user profile</button> */}
     </div>
     );
 }
@@ -126,13 +123,6 @@ function UserProfile(props) {
                         </div>
                     </div>
                 </div>
-    
-                {/* <h3>user profile</h3>
-                <p>user name: {props.user.userName}</p>
-                <p>first name: {props.user.firstName}</p>
-                <p>last name: {props.user.lastName}</p>
-                <p>you are a {props.user.type}</p>
-                <button onClick={handleLogOut}>log out</button> */}
             </>
         );
     } else {
@@ -158,13 +148,6 @@ function UserProfile(props) {
                         </div>
                     </div>
                 </div>
-    
-                {/* <h3>user profile</h3>
-                <p>user name: {props.user.userName}</p>
-                <p>first name: {props.user.firstName}</p>
-                <p>last name: {props.user.lastName}</p>
-                <p>you are a {props.user.type}</p>
-                <button onClick={handleLogOut}>log out</button> */}
             </>
         );
     }
@@ -285,6 +268,42 @@ function OrderPage(props) {
             setOrderList(newList)
         }
     }
+
+    const updatePendingList = async (event) => {
+        event.preventDefault();
+        const response = await fetch(props.urlPend , {
+            method: "GET",
+            headers: new Headers({
+                "Authorization": props.auth
+            })
+        })
+
+        if (response.status !== status.ok) {
+            const err = await response.text();
+            props.handleSetErr(err)
+        } else {
+            const newList = await response.json();
+            setPendingOrderList(newList)
+        }
+    }
+
+    const updateCompleteList = async (event) => {
+        event.preventDefault();
+        const response = await fetch(props.urlCompl , {
+            method: "GET",
+            headers: new Headers({
+                "Authorization": props.auth
+            })
+        })
+
+        if (response.status !== status.ok) {
+            const err = await response.text();
+            props.handleSetErr(err)
+        } else {
+            const newList = await response.json();
+            setCompletedOrderList(newList)
+        }
+    }
     
     const orderListHeader = header.map((col) => <th key={col}>{col}</th>)
 
@@ -295,7 +314,7 @@ function OrderPage(props) {
                 <td>{order.createdAt}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
-                <td>{order.price}</td>
+                <td>${order.price}</td>
                 <td>{order.range}</td>
                 <td>{order.status}</td>
             </tr>
@@ -309,7 +328,7 @@ function OrderPage(props) {
                 <td>{order.editedAt}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
-                <td>{order.price}</td>
+                <td>${order.price}</td>
                 <td>{order.range}</td>
                 <td>{order.status}</td>
             </tr>
@@ -323,7 +342,7 @@ function OrderPage(props) {
                 <td>{order.editedAt}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
-                <td>{order.price}</td>
+                <td>${order.price}</td>
                 <td>{order.range}</td>
                 <td>{order.status}</td>
             </tr>
@@ -374,6 +393,9 @@ function OrderPage(props) {
                         </tbody>
                     </table>
                     {specificContent}
+                    <div class='update-order-button'>
+                        <button onClick={updateList}>update list</button>
+                    </div>
                 </div>
                 <div class="order-page">
                     <h3>Pending Orders' page</h3>
@@ -386,6 +408,9 @@ function OrderPage(props) {
                         </tbody>
                     </table>
                     {specificContent2}
+                    <div class='update-order-button'>
+                        <button onClick={updatePendingList}>update list</button>
+                    </div>
                 </div>
                 <div class="order-page">
                     <h3>Completed Orders' page</h3>
@@ -397,6 +422,9 @@ function OrderPage(props) {
                         {renderCompletedOrderList}
                         </tbody>
                     </table>
+                    <div class='update-order-button'>
+                        <button onClick={updateCompleteList}>update list</button>
+                    </div>
                 </div>
             </div>
             </>
@@ -411,6 +439,7 @@ function AddOrder(props) {
             <button class="btn btn-sm btn-outline-primary w-100" onClick={props.updateList}>Update Order List</button> 
         </div>
         <div class="container pt-4 add-order">
+        <h4>Order Form</h4>
         <form>
             <div class='form-group'>
                 <label for="firstname">Recipient's First Name</label>
@@ -433,15 +462,6 @@ function AddOrder(props) {
         </div>
         </div>
     );
-        // <form>
-        //     <input placeholder="price" aria-label="price" onChange={props.handlePrice}></input>
-        //     <input placeholder="range" aria-label="range" onChange={props.handleRange}></input>
-        //     <input placeholder="pick up location" aria-label="pick up" onChange={props.handlePickUp}/>
-        //     <input placeholder="drop off location" aria-label="drop off" onChange={props.handleDropOff}/>
-        //     <button onClick={props.addOrder}>add order</button>
-        //     <button onClick={props.updateList}>update order list</button>
-        // </form>
-    // );
 }
 
 function AcceptOrder(props) {
@@ -476,35 +496,14 @@ function AcceptOrder(props) {
         }
     }
 
-    // const completeOrder = async (event) => {
-    //     event.preventDefault();
-    //     const response = await fetch(api.base + api.handlers.driver + api.handlers.complete + "/" + orderID, {
-    //         method: "PATCH",
-    //         headers: new Headers({
-    //             "Authorization": props.auth
-    //         })
-    //     });
-
-    //     if (response.status !== status.ok) {
-    //         const err = await response.text();
-    //         props.handleSetErr(err);
-    //     } else {
-    //         setAccepted(false);
-    //         props.handleSetErr("");
-    //         props.updateList(event);
-    //     }
-    // }
-
     let acceptOrderButton = <button onClick={handleOrderDetail}>accept order</button>
 
     return (<>
         <div>
             <form>
-                <input aria-label="order id" onChange={handleOrderID}></input>
+                <input aria-label="order id" placeholder="Enter OrderID" onChange={handleOrderID}></input>
                 {acceptOrderButton}
             </form>
-            {/* <p>Order info</p>
-            <p>{order._id} {order.customerID} {Date(order.createdAt)} {order.driverID} {order.range} {order.price} {order.pickupLocation} {order.dropoffLocation}</p> */}
         </div>
     </>
     );
@@ -547,11 +546,9 @@ function CompleteOrder(props) {
     return (<>
         <div>
             <form>
-                <input aria-label="order id" onChange={handleOrderID}></input>
+                <input aria-label="order id" placeholder="Enter OrderID" onChange={handleOrderID}></input>
                 {completeOrderButton}
             </form>
-            {/* <p>Order info</p>
-            <p>{order._id} {order.customerID} {Date(order.createdAt)} {order.driverID} {order.range} {order.price} {order.pickupLocation} {order.dropoffLocation}</p> */}
         </div>
     </>
     );

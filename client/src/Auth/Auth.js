@@ -86,11 +86,6 @@ export function SignIn(props) {
                 </div>
                 <button type="submit" class="btn btn-primary" onClick={handleSignIn}>Sign In</button>
             </form>
-            {/* <form>
-                <input placeholder="email" aria-label="email" onChange={handleEmail}></input>
-                <input placeholder="password" type="password" aria-label="password" onChange={handlePassword}></input>
-                <button onClick={handleSignIn}>sign in</button>
-            </form> */}
         </div>
         </> 
     );
@@ -99,6 +94,7 @@ export function SignIn(props) {
 export function SignUp(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordConf, setPasswordConf] = useState("");
     const [userName, setUserName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -109,6 +105,9 @@ export function SignUp(props) {
     }
     const handlePassword = (event) => {
         setPassword(event.target.value);
+    }
+    const handlePasswordConf = (event) => {
+        setPasswordConf(event.target.value);
     }
 
     const handleUserName = (event) => {
@@ -133,7 +132,7 @@ export function SignUp(props) {
         let sendData = {
             email: email,
             password: password,
-            passwordConf: password,
+            passwordConf: passwordConf,
             userName: userName,
             firstName: firstName,
             lastName: lastName,
@@ -196,6 +195,10 @@ export function SignUp(props) {
                             </div>
 
                             <div class="form-group">
+                                <input type="password" name="passwordConf" id="passwordConf" class="form-control input-sm" placeholder="Password Confirmation" onChange={handlePasswordConf}></input>
+                            </div>
+
+                            <div class="form-group">
                                 <input type="usertype" name="usertype" id="password" class="form-control input-sm" placeholder="'customer' or 'driver'" onChange={handleUserType}></input>
                             </div>
 			    			
@@ -205,18 +208,6 @@ export function SignUp(props) {
 			    	</div>
 	    		</div>
         </div>
-            {/* <h2>sign up</h2>
-            <form>
-                <input placeholder="email" aria-label="email" onChange={handleEmail}></input>
-                <input placeholder="password" type="password" aria-label="password" onChange={handlePassword}></input>
-                <input placeholder="username" aria-label="username" onChange={handleUserName} />
-                <input placeholder="first name" aria-label="first name" onChange={handleFirstName} />
-                <input placeholder="last name" aria-label="last name" onChange={handleLastName} />
-                <input placeholder="customer or driver" aria-label="user type" onChange={handleUserType} />
-                <input type="radio" id={type.customer} name="userType" value={type.customer}>Customer</input>
-                <input type="radio" id={type.driverr} name="userType" value={type.driverr}>Driver</input>
-                <button onClick={handleSignUp}>sign up</button>
-            </form> */}
         </>
     )
 }
