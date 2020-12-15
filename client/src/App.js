@@ -77,7 +77,7 @@ function App() {
         {renderErr}
       </main>
       <footer>
-        App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
+        App created by Brandon Z. Ly, Matthew Putra, Saksham Aggarwal and Khoa Luong
       </footer>
     </Container>
   );

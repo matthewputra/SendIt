@@ -27,82 +27,106 @@ Sending packages to friends and family can take a lot of time, especially in the
   * POST: Creates a new user and returns the user as a JSON object
     * 201: Successfully creates a new user
     * 400: User data is invalid
+    * 405: Invalid request method
     * 415: Invalid request body
     * 500: Internal server error
 * ```/v1/login```
+  * GET: Returns the current logged in user in JSON
+    * 200: Successfully returns the user
+    * 401: User is not logged in
+    * 405: Invalid request method
+    * 500: Internal server error
   * POST: Log in a user and returns the user as a JSON object
     * 200: Successfully logs in a user, takes JSON
     * 401: Fail to authenticate the credentials
+    * 405: Invalid request method
     * 415: Invalid request body
     * 500: Internal server error
   * DELETE: Log out a user
     * 200: Successfully logs out a customer
-    * 401: Invalid session ID
+    * 405: Invalid request method
     * 500: Internal server error
 * ```/v1/customer/{customerId}/order``` 
   * POST: Create new order, takes JSON
-    * 201: Successfully creates a new order
-    * 400: Order data is invalid
-    * 401: User not logged in
-    * 404: Given customerID not found
-    * 415: Invalid request body
-    * 500: Internal server error
+    * 201: Order successfully submitted
+    * 400: Please provide a valid pickup location
+    * 400: Please provide a valid dropoff location
+    * 401: Unauthorized user
+    * 405: Request method not allowed
+    * 500: Unable to create order!
   * GET: Gives a list of all the orders that has been created for the current customer
     * 200: Successfully returns all the orders from logged in customer
-    * 401: Customer is not logged in
-    * 404: Given customerID not found
-    * 415: Invalid request method
-    * 500: Internal server error
+    * 401: Unauthorized user
+    * 404: CustomerID not found
+    * 405: Request method not allowed
+    * 500: Internal Server Error
 * ```/v1/customer/{customerId}/order/{orderId}```
   * PATCH: Update an order, takes JSON
     * 200: Successfully updates an incomplete order
-    * 400: Update is Invalid
-    * 401: User not logged in
-    * 404: Given orderID is not found
-    * 415: Invalid request body
+    * 400: Order already accepted by driver, cannot be cancelled
+    * 401: Unauthorized user
+    * 404: Order not found
+    * 405: Request method not allowed
+    * 500: Order cannot be updated
     * 500: Internal server error
   * GET: Gives information about the given orderID 
     * 200: Successfully returns the information about the order
-    * 400: Invalid given orderID parameter 
-    * 401: User not logged in
-    * 404: Order is not found
-    * 415: Invalid request body
+    * 401: Unauthorized user
+    * 404: Order not found
+    * 405: Request method not allowed
     * 500: Internal server error
 * ``` /v1/driver/{driverId}/orderList```
   * GET: Gives a list of all the orders that has not been completed
     * 200: Successfully returns all the orders that has not been completed
-    * 401: Driver is not logged in
-    * 404: Given driverID not found
-    * 415: Invalid request method
+    * 401: Unauthorized user
+    * 404: DriverID not found
+    * 405: Request method not allowed
     * 500: Internal server error
 * ```/v1/driver/accept/{orderId}```
-  * PATCH: Gives full order information from given orderID
-    * 200: Successfully returns order information from specific order
-    * 401: Driver is not logged in
-    * 404: Given orderID not found
-    * 415: Invalid request method
+  * PATCH: Change order status to 'In Progress'
+    * 200: Successfully returns order information
+    * 401: Unauthorized user
+    * 404: Order not found
+    * 405: Request method not allowed
+    * 500: Order not accepted
     * 500: Internal server error
 * ``` /v1/driver/complete/{orderId}```
-  * PATCH: Display completed order confirmation and money earned
+  * PATCH: Change order status to 'Completed'
     * 200: Successfully returns order information
-    * 400: Invalid request body
-    * 404: Given orderID not found
-    * 415: Invalid request method
+    * 401: Unauthorized user
+    * 404: Order not found
+    * 405: Request method not allowed
+    * 500: Order not completed
     * 500: Internal server error
 * ```/v1/driver/complete```
-  * GET: Display all completed orders' information
+  * GET: Display all orders that has status 'Completed'
     * 200: Successfully returns list of all completed orders
-    * 401: Driver is not logged in
-    * 415: Invalid request method
+    * 401: Unauthorized user
+    * 405: Request method not allowed
     * 500: Internal server error
 * ```/v1/driver/earnings```
-  * GET: Display the total earnings the driver has earned from all orders
+  * GET: Returns the total earnings the driver has earned from all orders
     * 200: Successfully returns the total earning of the driver
-    * 401: Driver is not logged in
-    * 415: Invalid request method
+    * 401: Unauthorized user
+    * 405: Request method not allowed
+    * 500: Internal server error
+* ```/v1/driver/available```
+  * GET: Display all orders that has status 'Submitted'
+    * 200: Successfully returns list of all available orders
+    * 401: Unauthorized user
+    * 405: Request method not allowed
     * 500: Internal server error
 
 ### Infrastructure Diagram 
 
 ![SendIt Infrastructure Diagram](infrastructure_v1.jpg)
+
+### Customer's account instructions
+1. Sign up as a new user
+2. Fill in all the information needed and put in 'customer' for the usertype
+3. Click the sign up button
+4. 
+
+### Driver's account instructions
+
 
