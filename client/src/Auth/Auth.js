@@ -38,7 +38,6 @@ export function SignIn(props) {
 
     const handlePassword = (event) => {
         setPassword(event.target.value);
-        console.log(password);
     }
 
     const handleSignIn = async (event) => {
@@ -48,7 +47,6 @@ export function SignIn(props) {
             email: email,
             password: password
         };
-        //let sendData = EXAMPLE_LOGIN;
         const response = await fetch(url, {
             method: "POST",
             body: JSON.stringify(sendData),

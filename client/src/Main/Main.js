@@ -96,7 +96,6 @@ function UserProfile(props) {
         });
         if (response.status >= 300) {
             const error = await response.text();
-            console.log(error)
             props.handleSetErr(error);
         } else {
             localStorage.removeItem("Authorization");
@@ -292,7 +291,7 @@ function OrderPage(props) {
         return (
             <tr key={order._id}> 
                 <td>{order._id}</td> 
-                <td>{order.createdAt}</td>
+                <td>{Date(order.createdAt)}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
                 <td>{order.price}</td>
@@ -306,7 +305,7 @@ function OrderPage(props) {
         return (
             <tr key={order._id}> 
                 <td>{order._id}</td> 
-                <td>{order.editedAt}</td>
+                <td>{Date(order.editedAt)}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
                 <td>{order.price}</td>
@@ -320,7 +319,7 @@ function OrderPage(props) {
         return (
             <tr key={order._id}> 
                 <td>{order._id}</td> 
-                <td>{order.editedAt}</td>
+                <td>{Date(order.editedAt)}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
                 <td>{order.price}</td>
@@ -422,11 +421,11 @@ function AddOrder(props) {
             </div>
             <div class='form-group'>
                 <label for="pickup">Pick up Location</label>
-                <input type="email" class="form-control" aria-label="pickup" placeholder="Enter complete address (street, city, state)" onChange={props.handlePickUp}></input>
+                <input class="form-control" aria-label="pickup" placeholder="Enter complete address (street, city, state)" onChange={props.handlePickUp}></input>
             </div>
             <div class='form-group'>
                 <label for="drop off">Drop off Location</label>
-                <input type="email" class="form-control" aria-label="drop off" placeholder="Enter complete address (street, city, state)" onChange={props.handleDropOff}></input>
+                <input class="form-control" aria-label="drop off" placeholder="Enter complete address (street, city, state)" onChange={props.handleDropOff}></input>
             </div>
             <button class="btn btn-primary add-button" onClick={props.addOrder}>Place Order</button>
         </form>
@@ -452,8 +451,6 @@ function AcceptOrder(props) {
     const handleOrderID = (event) => {
         setOrderID(event.target.value)
     }
-
-    console.log(orderID);
 
     const handleOrderDetail = async (event) => {
         event.preventDefault();
@@ -513,13 +510,10 @@ function AcceptOrder(props) {
 function CompleteOrder(props) {
     const [orderID, setOrderID] = useState("");
     const [order, setOrder] = useState({});
-    const [accepted, setAccepted] = useState(false);
 
     const handleOrderID = (event) => {
         setOrderID(event.target.value)
     }
-
-    console.log(orderID);
 
     const completeOrder = async (event) => {
         event.preventDefault();
