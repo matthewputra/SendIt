@@ -8,11 +8,10 @@ export TLSKEY=/etc/letsencrypt/live/serversideisfun.me/privkey.pem
 docker run \
   -d \
   -v /etc/letsencrypt:/etc/letsencrypt:ro \
-  -v /app/node_modules \
-  -v ${PWD}:/app \
   -e TLSCERT=$TLSCERT \
   -e TLSKEY=$TLSKEY \
   -p 443:443 \
+  -p 80:80 \
   --name clientContainer \
   saksham8/sendit-client
 
