@@ -71,6 +71,7 @@ const getAvailableOrdersHandlers = async (req, res, { Order }) => {
 
 // Handles GET request for a specific driver to get total earnings
 const getTotalEarnings = async (req, res, { Order }) => {
+    console.log(req.get(Constants.HTTP_X_USER))
     let authUser = JSON.parse(req.get(Constants.HTTP_X_USER));
     if (!authUser) {
         res.status(Constants.HTTP_C_Unauthorized).send(Constants.HTTP_M_Unauthorized)
