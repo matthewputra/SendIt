@@ -119,7 +119,7 @@ Sending packages to friends and family can take a lot of time, especially in the
 
 ### Infrastructure Diagram 
 
-![SendIt Infrastructure Diagram](infrastructure_v1.jpg)
+![SendIt Infrastructure Diagram](infrastructure_v1.png)
 
 ### Customer's account instructions
 #### Log In Steps
