@@ -6,7 +6,7 @@ import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
 import userType from '../constants/userType'
 
-const header = ["OrderID", "Date Created", "Pick up Location", "Drop off Location", "Status"];
+const header = ["OrderID", "Date Created", "Pick up Location", "Drop off Location", "Price", "Range (mi)", "Status"];
 
 export default function MainPage(props) {
     const [page, setPage] = useState("Profile");
@@ -21,15 +21,23 @@ export default function MainPage(props) {
 
     let content = <></>
     if (page === "Profile") {
-        content = <UserProfile user={props.user} handleSetErr={props.handleSetErr} handleSetUser={props.handleSetUser}  handleSetAuth={props.handleSetAuth}/>
+        let urlDrEarn = ""
+        if (props.user.type === userType.driver) {
+            urlDrEarn = api.base + api.handlers.driver + api.handlers.earning
+        }
+        content = <UserProfile user={props.user} urlDrEarn={urlDrEarn} auth={props.auth} handleSetErr={props.handleSetErr} handleSetUser={props.handleSetUser}  handleSetAuth={props.handleSetAuth}/>
     } else if (page === "Order") {
         let url = "";
+        let urlCompl = "";
+        let urlPend = "";
         if (props.user.type === userType.customer) {
             url = api.base + api.handlers.customer + "/" + props.user.id + api.handlers.order
         } else {
             url = api.base + api.handlers.driver + "/" + api.handlers.available
+            urlPend = api.base + api.handlers.driver + "/" + props.user.id + api.handlers.orderList
+            urlCompl = api.base + api.handlers.driver + "/" + api.handlers.complete 
         }
-        content = <OrderPage user={props.user} url={url} auth={props.auth} handleSetErr={props.handleSetErr}/>
+        content = <OrderPage user={props.user} url={url} urlCompl={urlCompl} urlPend={urlPend} auth={props.auth} handleSetErr={props.handleSetErr}/>
     }
 
     return (
@@ -40,10 +48,10 @@ export default function MainPage(props) {
                 <div class="d-flex align-items-center">
                     <div class="ml-3 w-100">
                         <div class="button mt-2 d-flex flex-row align-items-center"> 
-                            <button class="btn btn-sm btn-outline-primary w-100" onClick={changeToOrder}>Show Order List</button> 
+                            <button class="btn btn-outline-primary w-100" onClick={changeToOrder}>Show Order List</button> 
                         </div>
                         <div class="button mt-2 d-flex flex-row align-items-center"> 
-                            <button class="btn btn-sm btn-outline-primary w-100" onClick={changeToProfile}>Show Profile</button> 
+                            <button class="btn btn-outline-primary w-100" onClick={changeToProfile}>Show Profile</button> 
                         </div>
                     </div>
                 </div>
@@ -58,6 +66,26 @@ export default function MainPage(props) {
 }
 
 function UserProfile(props) {
+    const [earnings, setEarnings] = useState("") 
+
+    const handleEarnings = async (event) => {
+        event.preventDefault();
+        const response = await fetch(props.urlDrEarn , {
+            method: "GET",
+            headers: new Headers({
+                "Authorization": props.auth
+            })
+        })
+
+        if (response.status !== status.ok) {
+            const err = await response.text();
+            props.handleSetErr(err)
+        } else {
+            const total = await response.text();
+            setEarnings(total)
+        }
+    }
+
     const handleLogOut = async (event) => {
         event.preventDefault();
         const response = await fetch(api.base + api.handlers.login, {
@@ -77,34 +105,70 @@ function UserProfile(props) {
             props.handleSetErr("");
         }
     }
-    return (
-        <>
-            <div class="container justify-content-center user-profile">
-                <div class="card p-3">
-                    <div class="d-flex align-items-center">
-                        <div class="image"> <img src="https://i.ibb.co/HCrg2Nf/User.png" class="rounded" width="155"/> </div>
-                        <div class="ml-3 w-100">
-                            <h4 class="mb-0 mt-0">{props.user.firstName} {props.user.lastName}</h4> 
-                            <div class="user-info">
-                                <h6>UserType: {props.user.type}</h6>
-                                <h6>Email: {props.user.email}</h6>
-                            </div>
-                            <div class="button mt-2 d-flex flex-row align-items-center"> 
-                                <button class="btn btn-sm btn-outline-primary w-100" onClick={handleLogOut}>Logout</button> 
+
+    if (props.user.type === userType.customer) {
+        return (
+            <>
+                <div class="container justify-content-center user-profile">
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="image"> <img src="https://i.ibb.co/HCrg2Nf/User.png" class="rounded" width="155"/> </div>
+                            <div class="ml-3 w-100">
+                                <h4 class="mb-0 mt-0">{props.user.firstName} {props.user.lastName}</h4> 
+                                <div class="user-info">
+                                    <h6>UserType: {props.user.type}</h6>
+                                    <h6>Email: {props.user.email}</h6>
+                                </div>
+                                <div class="button mt-2 d-flex flex-row align-items-center"> 
+                                    <button class="btn btn-sm btn-outline-primary w-100" onClick={handleLogOut}>Logout</button> 
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* <h3>user profile</h3>
-            <p>user name: {props.user.userName}</p>
-            <p>first name: {props.user.firstName}</p>
-            <p>last name: {props.user.lastName}</p>
-            <p>you are a {props.user.type}</p>
-            <button onClick={handleLogOut}>log out</button> */}
-        </>
-    );
+    
+                {/* <h3>user profile</h3>
+                <p>user name: {props.user.userName}</p>
+                <p>first name: {props.user.firstName}</p>
+                <p>last name: {props.user.lastName}</p>
+                <p>you are a {props.user.type}</p>
+                <button onClick={handleLogOut}>log out</button> */}
+            </>
+        );
+    } else {
+        return (
+            <>
+                <div class="container justify-content-center user-profile">
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="image"> <img src="https://i.ibb.co/HCrg2Nf/User.png" class="rounded" width="155"/> </div>
+                            <div class="ml-3 w-100">
+                                <h4 class="mb-0 mt-0">{props.user.firstName} {props.user.lastName}</h4> 
+                                <div class="user-info">
+                                    <h6>UserType: {props.user.type}</h6>
+                                    <h6>Email: {props.user.email}</h6>
+                                </div>
+                                <div class="button mt-2 d-flex flex-row align-items-center"> 
+                                    <button class="btn btn-outline-primary w-100" onClick={handleEarnings}>Total earnings: ${earnings}</button> 
+                                </div>
+                                <div class="button mt-2 d-flex flex-row align-items-center"> 
+                                    <button class="btn btn-outline-primary w-100" onClick={handleLogOut}>Logout</button> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                {/* <h3>user profile</h3>
+                <p>user name: {props.user.userName}</p>
+                <p>first name: {props.user.firstName}</p>
+                <p>last name: {props.user.lastName}</p>
+                <p>you are a {props.user.type}</p>
+                <button onClick={handleLogOut}>log out</button> */}
+            </>
+        );
+    }
+    
 }
 
 function OrderPage(props) {
@@ -113,6 +177,9 @@ function OrderPage(props) {
     const [range, setRange] = useState(0);
     const [pickUp, setPickUp] = useState("");
     const [dropOff, setDropOff] = useState("");
+
+    const [completedOrderList, setCompletedOrderList] = useState([]);
+    const [pendingOrderList, setPendingOrderList] = useState([]);
 
     useEffect(() => {
         fetch(props.url , {
@@ -126,6 +193,34 @@ function OrderPage(props) {
             data => setOrderList(data)
         ).catch(err => props.handleSetErr(err))
     }, [])
+
+    useEffect(() => {
+        if (props.user.type === userType.driver) {
+            fetch(props.urlPend , {
+                method: "GET",
+                headers: new Headers({
+                    "Authorization": props.auth
+                })
+            }).then(
+                response => response.json()
+            ).then(
+                data => setPendingOrderList(data)
+            ).catch(err => props.handleSetErr(err))}
+        }, [])
+
+    useEffect(() => {
+        if (props.user.type === userType.driver) {
+            fetch(props.urlCompl , {
+                method: "GET",
+                headers: new Headers({
+                    "Authorization": props.auth
+                })
+            }).then(
+                response => response.json()
+            ).then(
+                data => setCompletedOrderList(data)
+            ).catch(err => props.handleSetErr(err))}
+        }, [])
 
     const handlePrice = (event) => {
         setPrice(parseInt(event.target.value));
@@ -200,35 +295,113 @@ function OrderPage(props) {
                 <td>{order.createdAt}</td>
                 <td>{order.pickupLocation}</td>
                 <td>{order.dropoffLocation}</td>
+                <td>{order.price}</td>
+                <td>{order.range}</td>
+                <td>{order.status}</td>
+            </tr>
+        )
+    })
+
+    const renderPendingOrderList = pendingOrderList.map(order => {
+        return (
+            <tr key={order._id}> 
+                <td>{order._id}</td> 
+                <td>{order.editedAt}</td>
+                <td>{order.pickupLocation}</td>
+                <td>{order.dropoffLocation}</td>
+                <td>{order.price}</td>
+                <td>{order.range}</td>
+                <td>{order.status}</td>
+            </tr>
+        )
+    })
+
+    const renderCompletedOrderList = completedOrderList.map(order => {
+        return (
+            <tr key={order._id}> 
+                <td>{order._id}</td> 
+                <td>{order.editedAt}</td>
+                <td>{order.pickupLocation}</td>
+                <td>{order.dropoffLocation}</td>
+                <td>{order.price}</td>
+                <td>{order.range}</td>
                 <td>{order.status}</td>
             </tr>
         )
     })
 
     let specificContent = <></>
+    let specificContent2 = <></>
     if (props.user.type === userType.customer) {
         specificContent = <AddOrder handlePrice={handlePrice} handleRange={handleRange} handlePickUp={handlePickUp} 
         handleDropOff={handleDropOff} addOrder={addOrder} updateList={updateList}/>
     } else {
-        specificContent = <ProcessOrder updateList={updateList} handleSetErr={props.handleSetErr} auth={props.auth}/>
+        specificContent = <AcceptOrder updateList={updateList} handleSetErr={props.handleSetErr} auth={props.auth}/>
+        specificContent2 = <CompleteOrder updateList={updateList} handleSetErr={props.handleSetErr} auth={props.auth} /> 
     }
 
-    return (
-        <>
-        <div class="order-page">
-            <h3>Order page</h3>
-            <table className='table table-bordered'>
-                <thead>
-                    {orderListHeader}
-                </thead>
-                <tbody>
-                {renderOrderList}
-                </tbody>
-            </table>
-            {specificContent}
-        </div>
-        </>
-    );
+    if (props.user.type === userType.customer) {
+        return (
+            <>
+            <div>
+                <div class="order-page">
+                    <h3>Available Orders' page</h3>
+                    <table className='table table-bordered'>
+                        <thead>
+                            {orderListHeader}
+                        </thead>
+                        <tbody>
+                        {renderOrderList}
+                        </tbody>
+                    </table>
+                    {specificContent}
+                </div>
+            </div>
+            </>
+        );
+    } else {
+        return (
+            <>
+            <div>
+                <div class="order-page">
+                    <h3>Available Orders' page</h3>
+                    <table className='table table-bordered'>
+                        <thead>
+                            {orderListHeader}
+                        </thead>
+                        <tbody>
+                        {renderOrderList}
+                        </tbody>
+                    </table>
+                    {specificContent}
+                </div>
+                <div class="order-page">
+                    <h3>Pending Orders' page</h3>
+                    <table className='table table-bordered'>
+                        <thead>
+                            {orderListHeader}
+                        </thead>
+                        <tbody>
+                        {renderPendingOrderList}
+                        </tbody>
+                    </table>
+                    {specificContent2}
+                </div>
+                <div class="order-page">
+                    <h3>Completed Orders' page</h3>
+                    <table className='table table-bordered'>
+                        <thead>
+                            {orderListHeader}
+                        </thead>
+                        <tbody>
+                        {renderCompletedOrderList}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </>
+        );
+    }
 }
 
 function AddOrder(props) {
@@ -271,7 +444,7 @@ function AddOrder(props) {
     // );
 }
 
-function ProcessOrder(props) {
+function AcceptOrder(props) {
     const [orderID, setOrderID] = useState("");
     const [order, setOrder] = useState({});
     const [accepted, setAccepted] = useState(false);
@@ -303,6 +476,51 @@ function ProcessOrder(props) {
         }
     }
 
+    // const completeOrder = async (event) => {
+    //     event.preventDefault();
+    //     const response = await fetch(api.base + api.handlers.driver + api.handlers.complete + "/" + orderID, {
+    //         method: "PATCH",
+    //         headers: new Headers({
+    //             "Authorization": props.auth
+    //         })
+    //     });
+
+    //     if (response.status !== status.ok) {
+    //         const err = await response.text();
+    //         props.handleSetErr(err);
+    //     } else {
+    //         setAccepted(false);
+    //         props.handleSetErr("");
+    //         props.updateList(event);
+    //     }
+    // }
+
+    let acceptOrderButton = <button onClick={handleOrderDetail}>accept order</button>
+
+    return (<>
+        <div>
+            <form>
+                <input aria-label="order id" onChange={handleOrderID}></input>
+                {acceptOrderButton}
+            </form>
+            {/* <p>Order info</p>
+            <p>{order._id} {order.customerID} {Date(order.createdAt)} {order.driverID} {order.range} {order.price} {order.pickupLocation} {order.dropoffLocation}</p> */}
+        </div>
+    </>
+    );
+}
+
+function CompleteOrder(props) {
+    const [orderID, setOrderID] = useState("");
+    const [order, setOrder] = useState({});
+    const [accepted, setAccepted] = useState(false);
+
+    const handleOrderID = (event) => {
+        setOrderID(event.target.value)
+    }
+
+    console.log(orderID);
+
     const completeOrder = async (event) => {
         event.preventDefault();
         const response = await fetch(api.base + api.handlers.driver + api.handlers.complete + "/" + orderID, {
@@ -316,16 +534,15 @@ function ProcessOrder(props) {
             const err = await response.text();
             props.handleSetErr(err);
         } else {
-            setAccepted(false);
+            const orderInfo = response.json();
+            setOrder(orderInfo);
             props.handleSetErr("");
             props.updateList(event);
         }
     }
 
-    let completeOrderButton = <button onClick={handleOrderDetail}>accept order</button>
-    if (accepted) {
-        completeOrderButton = <button onClick={completeOrder}>complete order</button>
-    }
+    let completeOrderButton = <></>
+    completeOrderButton = <button onClick={completeOrder}>complete order</button>
 
     return (<>
         <div>
@@ -333,8 +550,8 @@ function ProcessOrder(props) {
                 <input aria-label="order id" onChange={handleOrderID}></input>
                 {completeOrderButton}
             </form>
-            <p>Order info</p>
-            <p>{order._id} {order.customerID} {Date(order.createdAt)} {order.driverID} {order.range} {order.price} {order.pickupLocation} {order.dropoffLocation}</p>
+            {/* <p>Order info</p>
+            <p>{order._id} {order.customerID} {Date(order.createdAt)} {order.driverID} {order.range} {order.price} {order.pickupLocation} {order.dropoffLocation}</p> */}
         </div>
     </>
     );
