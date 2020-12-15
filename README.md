@@ -122,11 +122,53 @@ Sending packages to friends and family can take a lot of time, especially in the
 ![SendIt Infrastructure Diagram](infrastructure_v1.jpg)
 
 ### Customer's account instructions
-1. Sign up as a new user
+#### Log In Steps
+1. LogIn with your customer account
+2. If you don't have a customer account, sign up as a new user
 2. Fill in all the information needed and put in 'customer' for the usertype
-3. Click the sign up button
-4. 
+3. Click the 'Register' button and you will be navigated to the dashboard
+#### Create New Order Steps
+1. Click on 'Show Order List' button to navigate to customer order page
+2. To create a new order, fill in the recipient's name and the pickup and dropoff location
+3. Click the 'Place Order' button to submit the order
+4. Click the 'Update Order List' button to see your new order under the 'Available Orders' table
+#### Payment
+1. Monitor your order page and see the status of your orders by clicking the 'Update Order List' button
+2. If your order status has changed from 'Submitted' to 'In Progress' that means a driver has accepted your order
+3. Wait for your driver to arrive at the pickup location and give the package to the driver
+4. Look at the price from the order table and pay the amount to the driver
+5. Monitor your order page again and check the status of your order
+6. If your order status has changed from 'In Progress' to 'Completed' that means the driver has completed your order
+#### Log Out Steps
+1. If you are not in the dashboard page, click the 'Show Profile' button and you will be navigated to the dashboard
+2. Click the 'Logout' button and you will be logged out
 
 ### Driver's account instructions
+#### Log In Steps
+1. LogIn with your customer account
+2. If you don't have a customer account, sign up as a new user
+2. Fill in all the information needed and put in 'driver' for the usertype
+3. Click the 'Register' button and you will be navigated to the dashboard
+#### Accepting An Order
+1. Click on 'Show Order List' button to navigate to driver's order list page
+2. Click the 'update list' button under 'Available Orders' table to see the available orders
+3. Look through the 'Available Orders' table and pick the order you want to take
+4. Type down the OrderID into the text box and click 'accept order' button
+5. Click the 'update list' button to see the order being removed from that table
+6. Go to the pick up location of your accepted order
+7. Receive the package and money from the order creator
+#### Completing An Order
+1. Go to the drop off location from your accepted order and drop off the package there
+2. Click on 'Show Order List' button to navigate to driver's order list page
+3. Click the 'update list' button under 'Pending Orders' table to see your pending orders
+4. Type down the OrderID from the order that you just completed into the text box and click 'complete order' button
+5. Click the 'update list' button to see the order being removed from that table
+6. Click the 'update list' button under 'Completed Orders' table to see the order that you have finished
+#### Checking Your Earnings
+1. If you are not in the dashboard page, click the 'Show Profile' button and you will be navigated to the dashboard
+2. Click on the 'Total Earnings' button and you will see the total earnings you get from all your completed orders
+#### Log Out Steps
+1. If you are not in the dashboard page, click the 'Show Profile' button and you will be navigated to the dashboard
+2. Click the 'Logout' button and you will be logged out
 
 
