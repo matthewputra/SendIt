@@ -77,10 +77,15 @@ function App() {
         <div class='space-maker'></div>
         {renderErr}
       </main>
+<<<<<<< HEAD
+      <footer>
+        App created by Brandon Z. Ly, Matthew Putra, Saksham Aggarwal and Khoa Luong
+=======
       <footer class="page-footer font-small blue">
         <div class="footer-copyright text-center py-3" id='footer'>
         App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
         </div>
+>>>>>>> cce4fe1beddd7cbd6d37c3b728677c4c235b7632
       </footer>
       {/* <footer class='footer'>
         App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong

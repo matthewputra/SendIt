@@ -135,7 +135,11 @@ func (ctx *HandlerContext) UserLoginHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "user is not logged in", http.StatusUnauthorized)
 			return
 		}
-		userJSON, _ := json.Marshal(sessionState.User)
+		userJSON, err := json.Marshal(sessionState.User)
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(userJSON)
@@ -153,7 +157,7 @@ func (ctx *HandlerContext) UserLoginHandler(w http.ResponseWriter, r *http.Reque
 		w.Write([]byte("user successfully logged out"))
 
 	} else {
-		http.Error(w, "Must be a POST or DELETE request method", http.StatusMethodNotAllowed)
+		http.Error(w, "Must be a POST or DELETE or GET request method", http.StatusMethodNotAllowed)
 		return
 	}
 }
