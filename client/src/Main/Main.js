@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
+import './Main.css';
 
 import api from '../constants/apiEndPoints'
 import status from '../constants/statusCode'
 import userType from '../constants/userType'
 
-const header = ["OrderID", "Date Created", "Status"];
+const header = ["OrderID", "Date Created", "Pick up Location", "Drop off Location", "Status"];
 
 export default function MainPage(props) {
     const [page, setPage] = useState("Profile");
@@ -33,10 +34,25 @@ export default function MainPage(props) {
 
     return (
     <div>
-        <h2>main page</h2>
+        <h2>Main page</h2>
+        <div class="container justify-content-center">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <div class="ml-3 w-100">
+                        <div class="button mt-2 d-flex flex-row align-items-center"> 
+                            <button class="btn btn-sm btn-outline-primary w-100" onClick={changeToOrder}>Show Order List</button> 
+                        </div>
+                        <div class="button mt-2 d-flex flex-row align-items-center"> 
+                            <button class="btn btn-sm btn-outline-primary w-100" onClick={changeToProfile}>Show Profile</button> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {content}
-        <button onClick={changeToOrder}>show order list</button>
-        <button onClick={changeToProfile}>show user profile</button>
+        {/* <button onClick={changeToOrder}>show order list</button> */}
+        {/* <button onClick={changeToProfile}>show user profile</button> */}
     </div>
     );
 }
@@ -63,12 +79,30 @@ function UserProfile(props) {
     }
     return (
         <>
-            <h3>user profile</h3>
+            <div class="container justify-content-center user-profile">
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="image"> <img src="https://i.ibb.co/HCrg2Nf/User.png" class="rounded" width="155"/> </div>
+                        <div class="ml-3 w-100">
+                            <h4 class="mb-0 mt-0">{props.user.firstName} {props.user.lastName}</h4> 
+                            <div class="user-info">
+                                <h6>UserType: {props.user.type}</h6>
+                                <h6>Email: {props.user.email}</h6>
+                            </div>
+                            <div class="button mt-2 d-flex flex-row align-items-center"> 
+                                <button class="btn btn-sm btn-outline-primary w-100" onClick={handleLogOut}>Logout</button> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* <h3>user profile</h3>
             <p>user name: {props.user.userName}</p>
             <p>first name: {props.user.firstName}</p>
             <p>last name: {props.user.lastName}</p>
             <p>you are a {props.user.type}</p>
-            <button onClick={handleLogOut}>log out</button>
+            <button onClick={handleLogOut}>log out</button> */}
         </>
     );
 }
@@ -159,7 +193,17 @@ function OrderPage(props) {
     
     const orderListHeader = header.map((col) => <th key={col}>{col}</th>)
 
-    const renderOrderList = orderList.map(order => {return <tr key={order._id}> <td>{order._id}</td> <td>{Date(order.createdAt)}</td> <td>{order.status}</td></tr>})
+    const renderOrderList = orderList.map(order => {
+        return (
+            <tr key={order._id}> 
+                <td>{order._id}</td> 
+                <td>{order.createdAt}</td>
+                <td>{order.pickupLocation}</td>
+                <td>{order.dropoffLocation}</td>
+                <td>{order.status}</td>
+            </tr>
+        )
+    })
 
     let specificContent = <></>
     if (props.user.type === userType.customer) {
@@ -171,31 +215,60 @@ function OrderPage(props) {
 
     return (
         <>
-            <h3>order page</h3>
+        <div class="order-page">
+            <h3>Order page</h3>
             <table className='table table-bordered'>
                 <thead>
-                    <tr>{orderListHeader}</tr>
+                    {orderListHeader}
                 </thead>
                 <tbody>
                 {renderOrderList}
                 </tbody>
             </table>
             {specificContent}
+        </div>
         </>
     );
 }
 
 function AddOrder(props) {
     return (
+        <div>
+        <div class="button mt-2 d-flex flex-row align-items-center"> 
+            <button class="btn btn-sm btn-outline-primary w-100" onClick={props.updateList}>Update Order List</button> 
+        </div>
+        <div class="container pt-4 add-order">
         <form>
-            <input placeholder="price" aria-label="price" onChange={props.handlePrice}></input>
-            <input placeholder="range" aria-label="range" onChange={props.handleRange}></input>
-            <input placeholder="pick up location" aria-label="pick up" onChange={props.handlePickUp}/>
-            <input placeholder="drop off location" aria-label="drop off" onChange={props.handleDropOff}/>
-            <button onClick={props.addOrder}>add order</button>
-            <button onClick={props.updateList}>update order list</button>
+            <div class='form-group'>
+                <label for="firstname">Recipient's First Name</label>
+                <input type="first name" class="form-control" aria-label="firstname" placeholder="First"></input>
+            </div>
+            <div class='form-group'>
+                <label for="lastname">Recipient's Last Name</label>
+                <input type="last name" class="form-control" aria-label="lastname" placeholder="Last"></input>
+            </div>
+            <div class='form-group'>
+                <label for="pickup">Pick up Location</label>
+                <input type="email" class="form-control" aria-label="pickup" placeholder="Enter complete address (street, city, state)" onChange={props.handlePickUp}></input>
+            </div>
+            <div class='form-group'>
+                <label for="drop off">Drop off Location</label>
+                <input type="email" class="form-control" aria-label="drop off" placeholder="Enter complete address (street, city, state)" onChange={props.handleDropOff}></input>
+            </div>
+            <button class="btn btn-primary add-button" onClick={props.addOrder}>Place Order</button>
         </form>
+        </div>
+        </div>
     );
+        // <form>
+        //     <input placeholder="price" aria-label="price" onChange={props.handlePrice}></input>
+        //     <input placeholder="range" aria-label="range" onChange={props.handleRange}></input>
+        //     <input placeholder="pick up location" aria-label="pick up" onChange={props.handlePickUp}/>
+        //     <input placeholder="drop off location" aria-label="drop off" onChange={props.handleDropOff}/>
+        //     <button onClick={props.addOrder}>add order</button>
+        //     <button onClick={props.updateList}>update order list</button>
+        // </form>
+    // );
 }
 
 function ProcessOrder(props) {

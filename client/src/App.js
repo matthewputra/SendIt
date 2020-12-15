@@ -5,8 +5,8 @@ import {BrowserRouter} from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
 
-import MainPage from './main/Main'
-import Auth from './auth/Auth'
+import MainPage from './Main/Main'
+import Auth from './Auth/Auth'
 import api from './constants/apiEndPoints';
 import status from './constants/statusCode'
 
@@ -70,15 +70,21 @@ function App() {
   return (
     <Container>
       <header>
-        <h1>SendIt App</h1>
+        <h1 class='project-title'>SendIt App</h1>
       </header>
       <main>
         {content}
+        <div class='space-maker'></div>
         {renderErr}
       </main>
-      <footer>
+      <footer class="page-footer font-small blue">
+        <div class="footer-copyright text-center py-3" id='footer'>
         App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
+        </div>
       </footer>
+      {/* <footer class='footer'>
+        App created by Brandon Z. Ly, Matthey Putra, Saksham Aggarwal and Khoa Luong
+      </footer> */}
     </Container>
   );
 }
