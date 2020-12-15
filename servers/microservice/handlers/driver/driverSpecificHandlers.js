@@ -82,10 +82,11 @@ const getTotalEarnings = async (req, res, { Order }) => {
 
     try {
         const orders = await Order.find( { driverID: driverID, status: Constants.ORDER_COMPLETED });
-        totalEarnings = 0;
+        let totalEarnings = 0;
         for (i = 0; i < orders.length; i++) {
             totalEarnings += orders[i].price;
         }
+        totalEarnings = totalEarnings.toFixed(2);
         res.setHeader(Constants.HTTP_CONTENT_TYPE, Constants.HTTP_CONTENT_TYPE_TEXT);
         res.status(Constants.HTTP_C_OK).send(totalEarnings.toString());
     } catch (e) {

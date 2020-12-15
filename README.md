@@ -171,4 +171,10 @@ Sending packages to friends and family can take a lot of time, especially in the
 1. If you are not in the dashboard page, click the 'Show Profile' button and you will be navigated to the dashboard
 2. Click the 'Logout' button and you will be logged out
 
+### What To Improve
+1. Add a cancellation function in the client side, so customers can cancel orders that has not been accepted by any driver
+2. Remove the 'Update Order List' and 'update list' button and make the app update the order tables automatically
+3. Integrate the app with Stripe so customers will pay the driver through our app
+4. Use prepared statements in our microservices handlers to prevent SQL injection attack
+5. Improve the UI/UX to make it more intuitive for users to create, accept, and completed an order
 
