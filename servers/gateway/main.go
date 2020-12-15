@@ -40,7 +40,6 @@ func SpecificDirector(context *handlers.HandlerContext, targetURLs []*url.URL) D
 			fmt.Println(encodedUser)
 			r.Header.Add("X-User", string(encodedUser))
 		} else {
-			// r.Header.Del("X-User")
 			log.Print(err)
 		}
 
@@ -70,11 +69,7 @@ func main() {
 	SESSIONKEY := os.Getenv("SESSIONKEY")
 	REDISADDR := os.Getenv("REDISADDR")
 	DSN := os.Getenv("DSN")
-
-	log.Printf("%s", SESSIONKEY)
-
 	MICROSERVICEADDR := os.Getenv("MICROSERVICEADDR")
-	log.Printf("%s", MICROSERVICEADDR)
 
 	microserviceAddrSlice := strings.Split(MICROSERVICEADDR, ",")
 	var microserviceURLs []*url.URL
@@ -103,6 +98,7 @@ func main() {
 	mux.HandleFunc("/v1/signup", ctx.UserSignUpHandler)
 	mux.HandleFunc("/v1/login", ctx.UserLoginHandler)
 
+	// Handlers for microservice re-direction
 	mux.Handle("/v1/customer/", microserviceProxy)
 	mux.Handle("/v1/driver/", microserviceProxy)
 	mux.Handle("/v1/driver/accept/", microserviceProxy)
@@ -114,5 +110,4 @@ func main() {
 
 	log.Printf("Server is listening at %s...", ADDR)
 	log.Fatal(http.ListenAndServeTLS(ADDR, TLSCERT, TLSKEY, wrappedMux))
-
 }

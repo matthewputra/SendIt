@@ -1,70 +1,75 @@
+const Constants = require("../../constants/constants");
 
 // Handles PATCH request to accept an order by a specific driver
 const acceptOrderHandler = async (req, res, { Order }) => {
-    let authUser = JSON.parse(req.get("X-User"));
+    let authUser = JSON.parse(req.get(Constants.HTTP_X_USER));
     if (!authUser) {
-        res.status(401).send("Unauthorized user")
+        res.status(Constants.HTTP_C_Unauthorized).send(Constants.HTTP_M_Unauthorized)
         return;
     }
 
     var driverID = authUser.id;
-    
     const orderID = req.params.orderID;
+
     const orderExist = await Order.exists({ _id: orderID });
     if (!orderExist) {
-        res.status(404).send("Order not found");
+        res.status(Constants.HTTP_C_NotFound).send(Constants.HTTP_M_OrderNotFound);
         return;
     }
 
     try {
         var filter = { _id: orderID };
-        var updates = { driverID: driverID, editedAt: new Date(), status: "In progress" };
+        var updates = { driverID: driverID, editedAt: new Date(), status: Constants.ORDER_IN_PROGRESS };
+        
         await Order.updateOne(filter, updates, function(err) {
             if (err) {
-                res.status(500).send("Order could not be accepted");
+                res.status(Constants.HTTP_C_InternalServerError).send(Constants.HTTP_M_OrderNotAccepted);
                 return;
             }
         });
+
         const acceptedOrder = await Order.findById(orderID);
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader(Constants.HTTP_CONTENT_TYPE, Constants.HTTP_CONTENT_TYPE_JSON);
         res.json(acceptedOrder);
     } catch (e) {
-        res.status(500).send("Internal Server Error - " + e);
+        res.status(Constants.HTTP_C_InternalServerError).send(Constants.HTTP_M_InternalServerError);
         return;
     }
 }
 
 // Handles PATCH request to complete an order by a specific driver
 const completeOrderHandler = async (req, res, { Order }) => {
-    let authUser = JSON.parse(req.get("X-User"));
+    let authUser = JSON.parse(req.get(Constants.HTTP_X_USER));
     if (!authUser) {
-        res.status(401).send("Unauthorized user")
+        res.status(Constants.HTTP_C_Unauthorized).send(Constants.HTTP_M_Unauthorized)
         return;
     }
 
     var driverID = authUser.id;
-    
     const orderID = req.params.orderID;
+    
     const orderExist = await Order.exists({ _id: orderID });
     if (!orderExist) {
-        res.status(404).send("Order not found");
+        res.status(Constants.HTTP_C_NotFound).send(Constants.HTTP_M_OrderNotFound);
         return;
     }
 
     try {
         var filter = { _id: orderID, driverID: driverID };
-        var updates = { editedAt: new Date(), status: "Completed" };
+        var updates = { editedAt: new Date(), status: Constants.ORDER_COMPLETED };
+        
         await Order.updateOne(filter, updates, function(err) {
             if (err) {
-                res.status(500).send("Order could not be completed");
+                res.status(Constants.HTTP_C_InternalServerError).send(Constants.HTTP_M_OrderNotCompleted);
                 return;
             }
         });
+        
         const completedOrder = await Order.findById(orderID);
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(completedOrder);
+        res.setHeader(Constants.HTTP_CONTENT_TYPE, Constants.HTTP_CONTENT_TYPE_JSON);
+        res.status(Constants.HTTP_C_OK).json(completedOrder);
     } catch (e) {
-        res.status(500).send("Internal Server Error - " + e);
+        res.status(Constants.HTTP_C_InternalServerError).send(Constants.HTTP_M_InternalServerError);
         return;
     }
 }

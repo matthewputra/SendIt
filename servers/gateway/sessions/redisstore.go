@@ -53,9 +53,6 @@ func (rs *RedisStore) Get(sid SessionID, sessionState interface{}) error {
 	//and reset the expiry time, so that it doesn't get deleted until
 	//the SessionDuration has elapsed.
 
-	//for extra-credit using the Pipeline feature of the redis
-	//package to do both the get and the reset of the expiry time
-	//in just one network round trip!
 	redisKey := sid.getRedisKey()
 	jsonData, err := rs.Client.Get(redisKey).Result()
 	if err != nil {

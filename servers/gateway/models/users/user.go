@@ -87,11 +87,7 @@ func (nu *NewUser) ToUser() (*User, error) {
 	//return any validation errors that may occur.
 	//if valid, create a new *User and set the fields
 	//based on the field values in `nu`.
-	//Leave the ID field as the zero-value; your Store
-	//implementation will set that field to the DBMS-assigned
-	//primary key value.
 
-	//also call .SetPassword() to set the PassHash
 	//field of the User to a hash of the NewUser.Password
 	userValidation := nu.Validate()
 	if userValidation != nil {

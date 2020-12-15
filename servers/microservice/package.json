@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1",
+    "google-distance-matrix": "^1.1.1",
     "mongoose": "^5.11.5",
     "mongoose-float": "^1.0.4",
     "mysql2": "^2.2.5",
@@ -12,7 +13,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC"
